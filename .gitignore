@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+cases.db
+*.log
+temp*.html
+qimen_test.html
+20200221.html
+20200221.txt
+temp_out.txt
+web_test.txt
+pdf_content.json

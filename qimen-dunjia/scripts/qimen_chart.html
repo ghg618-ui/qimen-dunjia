@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>奇门遁甲 - 2026年02月22日 12时20分</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Kaiti+7&display=swap');
+        body { background:#f5f2ed; font-family:"Microsoft YaHei",sans-serif; display:flex; flex-direction:column; align-items:center; padding:20px; margin:0; }
+        .header { text-align:center; margin-bottom:15px; color:#333; }
+        .header h1 { margin:0; font-size:1.4rem; letter-spacing:4px; font-weight:normal; }
+        .main-info { background:#fff; border:1px solid #dcd3d1; padding:15px; width:600px; margin-bottom:5px; box-sizing:border-box; }
+        .info-r { display:flex; justify-content:space-between; margin-bottom:8px; border-bottom:1px solid #f9f6f2; padding-bottom:4px; font-size:0.95rem; }
+        .lbl { color:#777; width:65px; display:inline-block; } .val { color:#333; flex-grow:1; text-align:left; }
+        .gv { color:#006621; } .kv { color:#c02; }
+        
+        .bazi-grid { display:flex; gap:10px; margin: 10px 0; border-top:1px solid #ddd; border-bottom:1px solid #ddd; padding:10px 0; text-align:center; }
+        .bazi-col { flex:1; display:flex; flex-direction:column; }
+        .bazi-lbl { color:#b8905b; font-size:0.85rem; margin-bottom:5px; }
+        .bazi-val { font-size:1.6rem; color:#d32f2f; font-weight:bold; }
+        .bazi-val.green { color:#2e7d32; }
+        
+        .grid {
+            display: grid; grid-template-columns: repeat(3, 195px); grid-template-rows: repeat(3, 140px);
+            background: #333; border: 2.5px solid #333; gap: 1.5px;
+        }
+        .palace-wrapper { position: relative; background: #fff; }
+        .palace { height:100%; padding: 8px; display: flex; flex-direction: column; box-sizing: border-box; }
+        .p5 { background: #fff; justify-content: center; align-items: center; border:1px solid #eee; }
+
+        .ma-ext { font-size: 1.1rem; color:#00bfa5; }
+
+        .p-row { display: flex; justify-content: space-between; align-items: center; min-height: 33.33%; }
+        .p-mid { }
+        .p-left { display: flex; align-items: center; white-space: nowrap; }
+        .p-right { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; }
+        
+        .p-stem-layer { display: flex; justify-content: flex-end; align-items: baseline; width: 100%; }
+        .p-shen { font-size: 1.1rem; color: #333; }
+        .p-yingan-box { display: flex; align-items: center; margin-right: 2px; position:relative; }
+        .p-yingan-box span { color: #aaa; font-size: 0.9rem; font-family: "Kaiti", serif; }
+        .p-xing { font-family: "Kaiti", serif; font-size: 1.15rem; color: #333; }
+        .p-men { font-family: "Kaiti", serif; font-size: 1.15rem; color: #333; }
+        .p-stem { font-family: "STKaiti", "Kaiti", serif; font-size: 1.5rem; line-height: 1; white-space: nowrap; position: relative; font-weight:bold; }
+        .circle { color: #1a9c3e; margin-right: 2px; }
+
+        .legend { font-size:0.85rem; color:#888; margin:15px;text-align:center; }
+        .leg { display:inline-block; margin:0 5px; }
+
+        /* 长生状态 样式 */
+        .stem-group { display: flex; flex-direction: column; align-items: center; position: relative; margin: 0 2px; }
+        .cs-label { display: none; position: absolute; bottom: 100%; font-size: 0.65rem; color: #888; white-space: nowrap; font-family: sans-serif; font-weight: normal; margin-bottom: 4px; letter-spacing: 0; line-height: 1; }
+        body.show-cs .cs-label { display: block; }
+
+        /* 底部按钮栏 */
+        .action-bar { margin-top: 10px; display: flex; gap: 8px; width: 600px; justify-content: center; }
+        .action-btn { flex: 1; padding: 12px 0; font-size: 0.95rem; background: #00bfa5; color: white; border: none; border-radius: 4px; cursor: pointer; text-align: center; font-weight:bold; transition: background 0.2s; user-select:none; max-width: 150px; margin: 0 5px;}
+        .action-btn:hover { background: #00a08a; }
+        .action-btn.active { background: #00a08a; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
+    </style>
+</head>
+<body>
+<div class="header"><h1>奇门遁甲</h1></div>
+<div class="main-info">
+  <div class="info-r"><span class="lbl" style="width:100%">盘式</span><span class="val">转盘奇门 · 寄坤宫 · 置闰 · 值使门起</span></div>
+  <div class="info-r"><span class="lbl" style="width:100%">日期</span><span class="val">2026年02月22日 12时20分</span></div>
+  <div class="bazi-grid">
+     <div class="bazi-col"><div class="bazi-lbl">年柱</div><div class="bazi-val">丙午</div></div>
+     <div class="bazi-col"><div class="bazi-lbl">月柱</div><div class="bazi-val green">庚寅</div></div>
+     <div class="bazi-col"><div class="bazi-lbl">日柱</div><div class="bazi-val green">丁卯</div></div>
+     <div class="bazi-col"><div class="bazi-lbl">时柱</div><div class="bazi-val">丙午</div></div>
+  </div>
+  <div class="info-r"><span class="lbl">节气</span><span class="val">雨水 2026.02.18 23:51</span></div>
+  <div class="info-r">
+      <span class="lbl">旬首</span><span class="val" style="color:#666">甲辰</span>
+      <span class="lbl">局数</span><span class="val" style="color:#666">阳遁9</span>
+  </div>
+  <div class="info-r">
+      <span class="lbl">值符</span><span class="val" style="color:#b8905b">天辅</span>
+      <span class="lbl">值使</span><span class="val" style="color:#b8905b">杜门</span>
+  </div>
+  <div class="info-r">
+      <span class="lbl">空亡</span><span class="val kv">寅卯</span>
+      <span class="lbl">马星</span><span class="val kv">午</span>
+  </div>
+</div>
+<div class="grid">
+<div class="palace-wrapper">
+  <div class="palace">
+    <div class="p-row p-top">
+      <div class="p-left"><span class="p-shen">玄武</span></div>
+      <div class="p-right"></div>
+    </div>
+    <div class="p-row p-mid">
+      <div class="p-left"><div class="p-yingan-box"><span title="隐干" style="color:#8b00cc;font-weight:bold">癸</span></div><span class="p-xing">天蓬</span></div>
+      <div class="p-right"><div class="p-stem-layer"><div class="stem-group"><span class="p-stem" style=";"><span class="cs-label">旺衰</span>己</span></div></div></div>
+    </div>
+    <div class="p-row p-bot">
+      <div class="p-left"><span class="p-men"><span style="color:#cc0000;font-weight:bold">开门</span></span></div>
+      <div class="p-right"><div class="p-stem-layer"><div class="stem-group"><span class="p-stem" style="color:#0066cc;font-weight:bold;"><span class="cs-label">墓绝</span>壬</span></div></div></div>
+    </div>
+  </div>
+</div>
+<div class="palace-wrapper">
+  <div class="palace">
+    <div class="p-row p-top">
+      <div class="p-left"><span class="p-shen">九地</span></div>
+      <div class="p-right"></div>
+    </div>
+    <div class="p-row p-mid">
+      <div class="p-left"><div class="p-yingan-box"><span title="隐干" style="">己</span></div><span class="p-xing">天任</span></div>
+      <div class="p-right"><div class="p-stem-layer"><div class="stem-group"><span class="p-stem" style=";"><span class="cs-label">长生</span>乙</span></div></div></div>
+    </div>
+    <div class="p-row p-bot">
+      <div class="p-left"><span class="p-men"><span style="color:#cc0000;font-weight:bold">休门</span></span></div>
+      <div class="p-right"><div class="p-stem-layer"><div class="stem-group"><span class="p-stem" style=";"><span class="cs-label">帝旺</span>戊</span></div></div></div>
+    </div>
+  </div>
+</div>
+<div class="palace-wrapper">
+  <div class="palace">
+    <div class="p-row p-top">
+      <div class="p-left"><span class="p-shen">九天</span></div>
+      <div class="p-right"><span class="ma-ext">🐎</span></div>
+    </div>
+    <div class="p-row p-mid">
+      <div class="p-left"><div class="p-yingan-box"><span title="隐干" style="">辛</span></div><span class="p-xing">天冲</span></div>
+      <div class="p-right"><div class="p-stem-layer"><div class="stem-group"><span class="p-stem" style=";"><span class="cs-label">旺衰</span>辛</span></div></div></div>
+    </div>
+    <div class="p-row p-bot">
+      <div class="p-left"><span class="p-men">生门</span></div>
+      <div class="p-right"><div class="p-stem-layer"><div class="stem-group"><span class="p-stem" style="color:#cc8800;font-weight:bold;"><span class="cs-label">冠临</span>癸</span></div><div class="stem-group"><span class="p-stem" style=";"><span class="cs-label">冠临</span>庚</span></div></div></div>
+    </div>
+  </div>
+</div>
+<div class="palace-wrapper">
+  <div class="palace">
+    <div class="p-row p-top">
+      <div class="p-left"><span class="p-shen"><span class="circle">○</span>白虎</span></div>
+      <div class="p-right"></div>
+    </div>
+    <div class="p-row p-mid">
+      <div class="p-left"><div class="p-yingan-box"><span title="隐干" style="">壬</span></div><span class="p-xing">天心</span></div>
+      <div class="p-right"><div class="p-stem-layer"><div class="stem-group"><span class="p-stem" style=";"><span class="cs-label">病</span>丁</span></div></div></div>
+    </div>
+    <div class="p-row p-bot">
+      <div class="p-left"><span class="p-men"><span style="color:#cc0000;font-weight:bold">惊门</span></span></div>
+      <div class="p-right"><div class="p-stem-layer"><div class="stem-group"><span class="p-stem" style=";"><span class="cs-label">绝</span>辛</span></div></div></div>
+    </div>
+  </div>
+</div><div class="palace p5">
+                  <div class="p-row p-mid"><div class="p-left"><div class="p-yingan-box"><span title="隐干">丁</span></div></div></div>
+                  <div class="p-row p-bot" style="justify-content: flex-end;"><div class="p-right"><div class="p-stem-layer"><span class="p-stem" style="font-size:0.9rem; color:#666;">癸</span></div></div></div>
+                </div>
+<div class="palace-wrapper">
+  <div class="palace">
+    <div class="p-row p-top">
+      <div class="p-left"><span class="p-shen">值符</span></div>
+      <div class="p-right"></div>
+    </div>
+    <div class="p-row p-mid">
+      <div class="p-left"><div class="p-yingan-box"><span title="隐干" style="">乙</span></div><span class="p-xing">天辅</span></div>
+      <div class="p-right"><div class="p-stem-layer"><div class="stem-group"><span class="p-stem" style=";"><span class="cs-label">沐浴</span>壬</span></div></div></div>
+    </div>
+    <div class="p-row p-bot">
+      <div class="p-left"><span class="p-men">伤门</span></div>
+      <div class="p-right"><div class="p-stem-layer"><div class="stem-group"><span class="p-stem" style=";"><span class="cs-label">死</span>丙</span></div></div></div>
+    </div>
+  </div>
+</div>
+<div class="palace-wrapper">
+  <div class="palace">
+    <div class="p-row p-top">
+      <div class="p-left"><span class="p-shen"><span class="circle">○</span>六合</span></div>
+      <div class="p-right"></div>
+    </div>
+    <div class="p-row p-mid">
+      <div class="p-left"><div class="p-yingan-box"><span title="隐干" style="">戊</span></div><span class="p-xing">天柱</span></div>
+      <div class="p-right"><div class="p-stem-layer"><div class="stem-group"><span class="p-stem" style=";"><span class="cs-label">养生</span>丙</span></div></div></div>
+    </div>
+    <div class="p-row p-bot">
+      <div class="p-left"><span class="p-men">死门</span></div>
+      <div class="p-right"><div class="p-stem-layer"><div class="stem-group"><span class="p-stem" style=";"><span class="cs-label">旺衰</span>乙</span></div></div></div>
+    </div>
+  </div>
+</div>
+<div class="palace-wrapper">
+  <div class="palace">
+    <div class="p-row p-top">
+      <div class="p-left"><span class="p-shen">太阴</span></div>
+      <div class="p-right"></div>
+    </div>
+    <div class="p-row p-mid">
+      <div class="p-left"><div class="p-yingan-box"><span title="隐干" style="">庚</span></div><span class="p-xing">芮禽</span></div>
+      <div class="p-right"><div class="p-stem-layer"><div class="stem-group"><span class="p-stem" style=";"><span class="cs-label">临官</span>癸</span></div><div class="stem-group"><span class="p-stem" style=";"><span class="cs-label">死</span>庚</span></div></div></div>
+    </div>
+    <div class="p-row p-bot">
+      <div class="p-left"><span class="p-men">景门</span></div>
+      <div class="p-right"><div class="p-stem-layer"><div class="stem-group"><span class="p-stem" style=";"><span class="cs-label">绝</span>己</span></div></div></div>
+    </div>
+  </div>
+</div>
+<div class="palace-wrapper">
+  <div class="palace">
+    <div class="p-row p-top">
+      <div class="p-left"><span class="p-shen">螣蛇</span></div>
+      <div class="p-right"></div>
+    </div>
+    <div class="p-row p-mid">
+      <div class="p-left"><div class="p-yingan-box"><span title="隐干" style="color:#cc8800;font-weight:bold">丙</span></div><span class="p-xing">天英</span></div>
+      <div class="p-right"><div class="p-stem-layer"><div class="stem-group"><span class="p-stem" style="color:#cc8800;font-weight:bold;"><span class="cs-label">墓绝</span>戊</span></div></div></div>
+    </div>
+    <div class="p-row p-bot">
+      <div class="p-left"><span class="p-men">杜门</span></div>
+      <div class="p-right"><div class="p-stem-layer"><div class="stem-group"><span class="p-stem" style=";"><span class="cs-label">胎养</span>丁</span></div></div></div>
+    </div>
+  </div>
+</div></div>
+
+<div class="legend">
+  颜色说明：
+  <span class="leg" style="color:#00bfa5">符使</span>、
+  <span class="leg" style="color:#cc8800">入墓</span>、
+  <span class="leg" style="color:#8b00cc">击刑</span>、
+  <span class="leg" style="color:#cc0000">门迫</span>、
+  <span class="leg" style="color:#0066cc">刑+墓</span>
+</div>
+
+<div class="action-bar">
+    <div class="action-btn" id="btn-cs" onclick="toggleCS()">长生状态</div>
+    <div class="action-btn" onclick="jmp('2026-02-22 10:20')">上一局</div>
+    <div class="action-btn" onclick="jmp('2026-02-22 14:20')">下一局</div>
+</div>
+
+<script>
+function toggleCS() {
+    const b = document.body;
+    const btn = document.getElementById('btn-cs');
+    if (b.classList.contains('show-cs')) {
+        b.classList.remove('show-cs');
+        btn.classList.remove('active');
+    } else {
+        b.classList.add('show-cs');
+        btn.classList.add('active');
+    }
+}
+
+function jmp(target_dt) {
+    const loc = window.location.href;
+    if (loc.startsWith("file:")) {
+        let cmd = 'python3 scripts/qimen_web.py "' + target_dt + '"';
+        let msg = "由于您当前在本地文件模式(file://)下预览，页面无法自动进行重新排盘。\n\n如需查看 " + target_dt + " 盘面，请复制以下命令在终端执行：\n\n" + cmd;
+        prompt(msg, cmd);
+    } else {
+        window.location.search = "?dt=" + encodeURIComponent(target_dt);
+    }
+}
+</script>
+</body>
+</html>
