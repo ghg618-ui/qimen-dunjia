@@ -17,14 +17,14 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
+            padding: 15px;
             margin: 0;
             -webkit-tap-highlight-color: transparent;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             color: #333;
         }
 
@@ -36,10 +36,35 @@
             font-family: 'Ma Shan Zheng', cursive;
         }
 
+        /* 恢复事项填写区域 */
+        .matter-section {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 8px;
+        }
+
+        .matter-input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: #b8905b;
+            text-align: center;
+            outline: none;
+            padding: 5px 0;
+            border-bottom: 1px dashed rgba(184, 144, 91, 0.3);
+        }
+
+        .matter-input::placeholder {
+            color: rgba(184, 144, 91, 0.4);
+            font-weight: normal;
+        }
+
         .main-info {
             background: #fff;
             border: 1px solid #dcd3d1;
-            padding: 15px;
+            padding: 12px;
             width: 100%;
             max-width: 600px;
             margin-bottom: 5px;
@@ -54,13 +79,13 @@
             margin-bottom: 8px;
             border-bottom: 1px solid #f9f6f2;
             padding-bottom: 4px;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             align-items: center;
         }
 
         .lbl {
             color: #777;
-            width: 65px;
+            width: 60px;
             display: inline-block;
         }
 
@@ -70,15 +95,10 @@
             text-align: left;
         }
 
-        .kv {
-            color: #c02;
-            font-weight: bold;
-        }
-
         .bazi-grid {
             display: flex;
             gap: 10px;
-            margin: 10px 0;
+            margin: 8px 0;
             border-top: 1px solid #eee;
             border-bottom: 1px solid #eee;
             padding: 10px 0;
@@ -93,12 +113,12 @@
 
         .bazi-lbl {
             color: #b8905b;
-            font-size: 0.85rem;
-            margin-bottom: 5px;
+            font-size: 0.8rem;
+            margin-bottom: 4px;
         }
 
         .bazi-val {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             color: #d32f2f;
             font-weight: bold;
         }
@@ -110,9 +130,9 @@
         .grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            grid-auto-rows: 140px;
+            grid-auto-rows: 135px;
             background: #333;
-            border: 2.3px solid #333;
+            border: 2.2px solid #333;
             gap: 1.5px;
             width: 100%;
             max-width: 600px;
@@ -124,12 +144,11 @@
             position: relative;
             background: #fff;
             cursor: pointer;
-            transition: background 0.2s;
         }
 
         .palace {
             height: 100%;
-            padding: 8px;
+            padding: 6px;
             display: flex;
             flex-direction: column;
             box-sizing: border-box;
@@ -156,23 +175,23 @@
         }
 
         .p-shen {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             color: #333;
         }
 
         .p-xing {
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             color: #333;
         }
 
         .p-men {
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             color: #333;
             font-weight: bold;
         }
 
         .p-stem {
-            font-size: 1.45rem;
+            font-size: 1.5rem;
             line-height: 1;
             white-space: nowrap;
             font-weight: bold;
@@ -181,7 +200,7 @@
 
         .p-yingan {
             color: #aaa;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             margin-right: 2px;
         }
 
@@ -192,45 +211,45 @@
         }
 
         .ma-ext {
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: #00bfa5;
         }
 
-        .naji-badge {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(212, 237, 218, 0.95);
-            color: #155724;
-            border: 2px solid #28a745;
-            border-radius: 8px;
-            padding: 6px 12px;
-            font-size: 1.1rem;
+        /* 笔记预览区域 */
+        .note-preview {
+            width: 100%;
+            max-width: 600px;
+            background: #fff;
+            border-radius: 12px;
+            margin-top: 10px;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 1px solid #eee;
+        }
+
+        .note-title {
+            color: #b8905b;
+            font-size: 0.9rem;
             font-weight: bold;
-            z-index: 20;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            animation: pulse 2s infinite;
-            pointer-events: none;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #f5f2ed;
+            padding-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
         }
 
-        @keyframes pulse {
-            0% {
-                transform: translate(-50%, -50%) scale(1);
-            }
-
-            70% {
-                transform: translate(-50%, -50%) scale(1.08);
-            }
-
-            100% {
-                transform: translate(-50%, -50%) scale(1);
-            }
+        .note-content {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.6;
+            min-height: 40px;
+            white-space: pre-wrap;
         }
 
+        /* 底部导航 */
         .bottom-nav {
             position: fixed;
-            bottom: 25px;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             width: 92%;
@@ -241,9 +260,9 @@
             border-radius: 40px;
             display: flex;
             justify-content: space-around;
-            padding: 10px 5px;
+            padding: 8px 5px;
             z-index: 1000;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
         }
 
         .nav-item {
@@ -251,13 +270,13 @@
             flex-direction: column;
             align-items: center;
             color: #8b7355;
-            font-size: 0.7rem;
+            font-size: 0.72rem;
             cursor: pointer;
             flex: 1;
         }
 
         .nav-icon {
-            font-size: 1.4rem;
+            font-size: 1.35rem;
             margin-bottom: 2px;
         }
 
@@ -282,7 +301,7 @@
             margin: 10% auto;
             padding: 20px;
             border-radius: 12px;
-            width: 85%;
+            width: 88%;
             max-width: 500px;
             position: relative;
             max-height: 80vh;
@@ -300,7 +319,7 @@
             display: none;
             position: absolute;
             bottom: 100%;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: #888;
             white-space: nowrap;
             margin-bottom: 4px;
@@ -310,8 +329,24 @@
             display: block;
         }
 
+        .naji-badge {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(212, 237, 218, 0.95);
+            color: #155724;
+            border: 1.5px solid #28a745;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            z-index: 20;
+            pointer-events: none;
+        }
+
         .action-bar {
-            margin: 20px 0 100px 0;
+            margin: 15px 0 100px 0;
             display: flex;
             gap: 8px;
             width: 100%;
@@ -320,7 +355,7 @@
 
         .action-btn {
             flex: 1;
-            padding: 12px;
+            padding: 10px;
             background: #00bfa5;
             color: white;
             border: none;
@@ -328,11 +363,11 @@
             cursor: pointer;
             font-weight: bold;
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
         }
 
         .dt-input {
-            font-size: 1rem;
+            font-size: 0.95rem;
             border: 1px solid #ccc;
             border-radius: 8px;
             padding: 6px;
@@ -354,12 +389,11 @@
         #drop-zone {
             border: 2px dashed #b8905b;
             border-radius: 12px;
-            padding: 30px;
+            padding: 25px;
             text-align: center;
             color: #8b7355;
             background: #fdfdfb;
             cursor: pointer;
-            margin-bottom: 15px;
         }
 
         #drop-zone.hover {
@@ -377,17 +411,6 @@
             background: #f9f9f9;
         }
 
-        .case-title {
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 4px;
-        }
-
-        .case-meta {
-            font-size: 0.8rem;
-            color: #999;
-        }
-
         #toast {
             pointer-events: none;
             position: fixed;
@@ -396,11 +419,12 @@
             transform: translate(-50%, -50%);
             background: rgba(0, 0, 0, 0.8);
             color: white;
-            padding: 12px 24px;
+            padding: 10px 20px;
             border-radius: 30px;
             z-index: 20000;
             display: none;
             text-align: center;
+            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -409,8 +433,13 @@
     <div class="header">
         <h1>奇门遁甲</h1>
     </div>
+
+    <div class="matter-section">
+        <input type="text" id="matter-display" class="matter-input" placeholder="点击输入所测事项...">
+    </div>
+
     <div class="main-info">
-        <div class="info-r" style="border-bottom: none; margin-bottom: 5px;"><span class="val"
+        <div class="info-r" style="border-bottom: none; margin-bottom: 3px;"><span class="val"
                 style="color:#b8905b; font-weight:bold; letter-spacing:1px;">转盘随身版 · 寄坤 · 置闰</span></div>
         <div class="info-r"><span class="lbl">日期</span><span class="val"
                 style="display:flex; align-items:center;"><input type="datetime-local" id="custom-dt"
@@ -443,12 +472,20 @@
         <div class="info-r" style="border-bottom:none; margin-bottom:0;"><span class="lbl">空亡</span><span class="val kv"
                 id="xunkong-val">--</span><span class="lbl">马星</span><span class="val kv" id="yima-val">--</span></div>
     </div>
+
     <div class="grid" id="qimen-grid"></div>
+
+    <div class="note-preview" id="note-area" style="display:none;">
+        <div class="note-title"><span>档案笔记</span><span id="note-id" style="color:#999;font-weight:normal;"></span></div>
+        <div class="note-content" id="note-display"></div>
+    </div>
+
     <div class="action-bar">
         <div class="action-btn" onclick="stepTime(-2)">◀ 上一局</div>
         <div class="action-btn" style="background:#6c757d" onclick="toggleCS()">显示长生</div>
         <div class="action-btn" onclick="stepTime(2)">下一局 ▶</div>
     </div>
+
     <div class="bottom-nav">
         <div class="nav-item" onclick="resetToNow()"><span class="nav-icon">🏠</span><span>现在</span></div>
         <div class="nav-item" onclick="openCasesModal()"><span class="nav-icon">📁</span><span>档案库</span></div>
@@ -456,12 +493,13 @@
         </div>
         <div class="nav-item" onclick="shareChart()"><span class="nav-icon">📤</span><span>分享</span></div>
     </div>
+
     <div id="toast"></div>
     <div id="casesModal" class="modal">
         <div class="modal-content"><span class="close" onclick="closeModal('casesModal')">&times;</span>
-            <h3 style="color:#b8905b">本地档案接入</h3>
-            <div id="drop-zone">📂 点击或将 cases.db 拖拽至此</div>
-            <div id="case-list-box" style="margin-top:20px;"></div>
+            <h3 style="color:#b8905b">案例库解析</h3>
+            <div id="drop-zone">📂 点击或将 cases.db 拖入此区域</div>
+            <div id="case-list-box" style="margin-top:20px;max-height:50vh;overflow-y:auto;"></div>
         </div>
     </div>
     <div id="palaceModal" class="modal">
@@ -470,6 +508,7 @@
             <div id="palace-content"></div>
         </div>
     </div>
+
     <script>
         const T = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'], D = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'], SQ = ['戊', '己', '庚', '辛', '壬', '癸', '丁', '丙', '乙'], ZO = [1, 8, 3, 4, 9, 2, 7, 6], BO = { 1: '休门', 2: '死门', 3: '伤门', 4: '杜门', 6: '开门', 7: '惊门', 8: '生门', 9: '景门' }, XO = { 1: '天蓬', 2: '天芮', 3: '天冲', 4: '天辅', 5: '天禽', 6: '天心', 7: '天柱', 8: '天任', 9: '天英' }, BS = ['值符', '螣蛇', '太阴', '六合', '白虎', '玄武', '九地', '九天'];
         let curD = new Date();
@@ -498,7 +537,7 @@
         function paipan(date) {
             try {
                 const sol = window.Solar.fromDate(date), lun = sol.getLunar(), hg = lun.getTimeInGanZhi(), xs = getXS(hg), dg = { '甲子': '戊', '甲戌': '己', '甲申': '庚', '甲午': '辛', '甲辰': '壬', '甲寅': '癸' }[xs], jn = lun.getPrevJieQi().getName(), ji = ['冬至', '小寒', '大寒', '立春', '雨水', '惊蛰', '春分', '清明', '谷雨', '立夏', '小满', '芒种', '夏至', '小暑', '大暑', '立秋', '处暑', '白露', '秋分', '寒露', '霜降', '立冬', '小雪', '大雪'].indexOf(jn), dayOrder = (10 + Math.floor((new Date(sol.getYear(), sol.getMonth() - 1, sol.getDay()) - new Date(1900, 0, 1)) / 86400000)) % 60, sy = Math.floor((dayOrder % 15) / 5), ju = [[1, 7, 4], [2, 8, 5], [3, 9, 6], [8, 5, 2], [9, 6, 3], [1, 7, 4], [3, 9, 6], [4, 1, 7], [5, 2, 8], [4, 1, 7], [5, 2, 8], [6, 3, 9], [9, 3, 6], [8, 2, 5], [7, 1, 4], [2, 5, 8], [1, 4, 7], [9, 3, 6], [7, 1, 4], [6, 9, 3], [5, 8, 2], [6, 9, 3], [5, 8, 2], [4, 7, 1]][ji][sy], dp = {};[1, 2, 3, 4, 5, 6, 7, 8, 9].forEach((g, i) => { dp[ji < 12 ? [1, 2, 3, 4, 5, 6, 7, 8, 9][([1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(ju) + i) % 9] : [1, 2, 3, 4, 5, 6, 7, 8, 9][([1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(ju) - i + 9) % 9]] = SQ[i]; });
-                const xg = Object.keys(dp).find(k => dp[k] === dg), xa = xg == 5 ? 2 : parseInt(xg), sg = hg[0] === '甲' ? dg : hg[0], sgG = Object.keys(dp).find(k => dp[k] === sg), sa = sgG == 5 ? 2 : parseInt(sgG), st = (D.indexOf(hg[1]) - D.indexOf(xs.substring(1)) + 12) % 12; let cg = parseInt(xg); for (let i = 0; i < st; i++)cg = ji < 12 ? (cg == 9 ? 1 : cg + 1) : (cg == 1 ? 9 : cg - 1);
+                const xg = Object.keys(dp).find(k => dp[k] === dg), xa = xg == 5 ? 2 : parseInt(xg), sg = hg[0] === '甲' ? dg : hg[0], sgG = Object.keys(dp).find(k => dp[k] === sg), sa = sgG == 5 ? 2 : parseInt(sgG); let cg = parseInt(xg); for (let i = 0; i < ((D.indexOf(hg[1]) - D.indexOf(xs.substring(1)) + 12) % 12); i++)cg = ji < 12 ? (cg == 9 ? 1 : cg + 1) : (cg == 1 ? 9 : cg - 1);
                 const zt = cg == 5 ? 2 : cg, get = (g) => ZO.indexOf(g == 5 ? 2 : g), xp = get(xa), sp = get(sa), zp = get(zt), jg = {}, zhishi = BO[xg] || '死门';
                 for (let n = 1; n <= 9; n++) { if (n == 5) { jg[n] = { dp: dp[5], yg: '' }; continue; } const p = ZO.indexOf(n), xiG = ZO[(p - (sp - xp + 8) % 8 + 8) % 8], meG = ZO[(p - (zp - xp + 8) % 8 + 8) % 8]; jg[n] = { dp: dp[n], tp: dp[xiG] || dp[5], xi: XO[xiG], me: BO[meG] || '死门', sn: BS[ji < 12 ? (p - sp + 8) % 8 : (sp - p + 8) % 8] }; }
                 const ym = {}; for (let i = 0; i < 9; i++)ym[ji < 12 ? (zt + i - 1) % 9 + 1 : (zt - i + 9 - 1) % 9 + 1] = SQ[(SQ.indexOf(sg) + i) % 9]; for (let n = 1; n <= 9; n++)jg[n].yg = ym[n];
@@ -507,58 +546,57 @@
             } catch (e) { console.error(e); return null; }
         }
         function getXS(gz) { const gi = T.indexOf(gz[0]), zi = D.indexOf(gz[1]); return "甲" + D[(zi - gi + 12) % 12]; }
-        function resetToNow() { curD = new Date(); document.getElementById('custom-dt').value = new Date(curD.getTime() - curD.getTimezoneOffset() * 60000).toISOString().substring(0, 16); const r = paipan(curD); if (r) updateUI(r); }
+        function resetToNow() { curD = new Date(); document.getElementById('custom-dt').value = new Date(curD.getTime() - curD.getTimezoneOffset() * 60000).toISOString().substring(0, 16); document.getElementById('matter-display').value = ''; document.getElementById('note-area').style.display = 'none'; const r = paipan(curD); if (r) updateUI(r); }
         function jumpToDate() { const v = document.getElementById('custom-dt').value; if (v) { curD = new Date(v); const r = paipan(curD); if (r) updateUI(r); } }
-        function stepTime(h) { curD.setHours(curD.getHours() + h); document.getElementById('custom-dt').value = new Date(curD.getTime() - curD.getTimezoneOffset() * 60000).toISOString().substring(0, 16); const r = paipan(curD); if (r) updateUI(r); }
-        function toggleCS() { document.body.classList.toggle('show-cs'); showToast(document.body.classList.contains('show-cs') ? '长生开启' : '关闭'); }
-        function toggleNaji() { const b = document.getElementById('nav-naji'); const a = b.classList.toggle('act-nj'); document.querySelectorAll('.naji-badge').forEach(i => i.style.display = a ? 'flex' : 'none'); showToast(a ? '吉位视觉已开启' : '关闭'); }
+        function stepTime(h) { curD.setHours(curD.getHours() + h); document.getElementById('custom-dt').value = new Date(curD.getTime() - curD.getTimezoneOffset() * 60000).toISOString().substring(0, 16); const r = paipan(curD); if (r) updateUI(r); if (document.getElementById('note-area').style.display === 'block') showToast('当前为手动推演模式'); }
+        function toggleCS() { document.body.classList.toggle('show-cs'); showToast(document.body.classList.contains('show-cs') ? '长生显示' : '已关闭'); }
+        function toggleNaji() { const b = document.getElementById('nav-naji'); const a = b.classList.toggle('act-nj'); document.querySelectorAll('.naji-badge').forEach(i => i.style.display = a ? 'flex' : 'none'); showToast(a ? '启吉位滤镜' : '已关闭'); }
         function openCasesModal() { document.getElementById('casesModal').style.display = 'block'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function showP(n, r) { document.getElementById('palace-title').innerText = ["", "坎一", "坤二", "震三", "巽四", "中五", "乾六", "兑七", "艮八", "离九"][n]; document.getElementById('palace-content').innerHTML = `解析中...`; document.getElementById('palaceModal').style.display = 'block'; }
-        function shareChart() { showToast('生成分享卡片中...'); html2canvas(document.body).then(c => { const l = document.createElement('a'); l.download = 'Qimen_Chart.png'; l.href = c.toDataURL(); l.click(); }); }
+        function showP(n, r) { document.getElementById('palace-title').innerText = ["", "坎一", "坤二", "震三", "巽四", "中五", "乾六", "兑七", "艮八", "离九"][n]; document.getElementById('palace-content').innerHTML = `正在为您解析 ${n} 宫格局方案...`; document.getElementById('palaceModal').style.display = 'block'; }
+        function shareChart() { showToast('正在生成分享图中...'); html2canvas(document.body).then(c => { const l = document.createElement('a'); l.download = 'Qimen_Web.png'; l.href = c.toDataURL(); l.click(); }); }
         function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000); }
+        function showHelp() { document.getElementById('helpModal').style.display = 'block'; }
 
-        // --- SQL Logic ---
-        let SQL_DB = null;
-        async function initDB(arrayBuffer) {
-            const config = { locateFile: filename => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/${filename}` };
-            const SQL = await initSqlJs(config);
-            SQL_DB = new SQL.Database(new Uint8Array(arrayBuffer));
-            renderCaseList();
+        // --- Database Logic ---
+        let DB = null;
+        async function initDB(buffer) {
+            const SQL = await initSqlJs({ locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/${file}` });
+            DB = new SQL.Database(new Uint8Array(buffer));
+            const res = DB.exec("SELECT name, chart_time, notes, id FROM cases ORDER BY chart_time DESC");
+            if (res.length > 0) {
+                document.getElementById('case-list-box').innerHTML = res[0].values.map(v => `
+            <div class="case-item" onclick="loadCase('${v[0]}','${v[1]}','${v[2]}','${v[3]}')">
+                <div style="font-weight:bold">${v[0] || '未命名事项'} <span style="font-weight:normal;color:#999;font-size:0.8rem">ID:${v[3]}</span></div>
+                <div style="font-size:0.8rem;color:#999">${v[1]}</div>
+                <div style="font-size:0.85rem;color:#666;margin-top:4px">${v[2] ? v[2].substring(0, 35) + '...' : '无摘要'}</div>
+            </div>
+        `).join('');
+            }
         }
-        function renderCaseList() {
-            if (!SQL_DB) return;
-            const res = SQL_DB.exec("SELECT id, name, chart_time, notes FROM cases ORDER BY chart_time DESC");
-            if (res.length === 0) return;
-            const rows = res[0].values;
-            const box = document.getElementById('case-list-box');
-            box.innerHTML = rows.map(r => `
-        <div class="case-item" onclick="loadCase('${r[2]}')">
-            <div class="case-title">${r[1] || '未命名案例'}</div>
-            <div class="case-meta">时间：${r[2]}</div>
-            <div style="font-size:0.85rem;color:#666">${r[3] ? r[3].substring(0, 30) + '...' : '无备注'}</div>
-        </div>
-    `).join('');
-        }
-        function loadCase(dt) {
+        function loadCase(m, dt, n, id) {
+            document.getElementById('matter-display').value = m;
             document.getElementById('custom-dt').value = dt.replace(' ', 'T');
-            jumpToDate();
-            closeModal('casesModal');
+            document.getElementById('note-display').innerText = n || '暂无详细记录';
+            document.getElementById('note-id').innerText = `档案号: ${id}`;
+            document.getElementById('note-area').style.display = 'block';
+            jumpToDate(); closeModal('casesModal');
         }
-        const dropZone = document.getElementById('drop-zone');
-        dropZone.onclick = () => { const input = document.createElement('input'); input.type = 'file'; input.onchange = e => handleFile(e.target.files[0]); input.click(); };
-        dropZone.ondragover = e => { e.preventDefault(); dropZone.classList.add('hover'); };
-        dropZone.ondragleave = () => dropZone.classList.remove('hover');
-        dropZone.ondrop = e => { e.preventDefault(); dropZone.classList.remove('hover'); handleFile(e.dataTransfer.files[0]); };
-        function handleFile(file) {
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = e => initDB(e.target.result);
-            reader.readAsArrayBuffer(file);
-            showToast('正在解析档案库...');
-        }
+        const drop = document.getElementById('drop-zone');
+        drop.onclick = () => { const i = document.createElement('input'); i.type = 'file'; i.onchange = e => handle(e.target.files[0]); i.click(); };
+        drop.ondragover = e => { e.preventDefault(); drop.classList.add('hover'); };
+        drop.ondragleave = () => drop.classList.remove('hover');
+        drop.ondrop = e => { e.preventDefault(); drop.classList.remove('hover'); handle(e.dataTransfer.files[0]); };
+        function handle(f) { if (f) { const r = new FileReader(); r.onload = e => initDB(e.target.result); r.readAsArrayBuffer(f); showToast('档案库解析中...'); } }
         window.onload = () => { setTimeout(resetToNow, 300); };
     </script>
+    <div id="helpModal" class="modal">
+        <div class="modal-content"><span class="close" onclick="closeModal('helpModal')">&times;</span>
+            <h3 style="color:#b8905b">随身版说明</h3>
+            <p>此网页版采用纯 JavaScript 引擎，旨在提供精美的视觉排盘和便捷的吉位参考。</p>
+            <p><b>特别说明</b>：网页版无法直接自动同步您电脑里的案例库文件。只需点击“档案库”并将 cases.db 拖入，即可完整查阅您的历史事项和笔记。</p>
+        </div>
+    </div>
 </body>
 
 </html>
