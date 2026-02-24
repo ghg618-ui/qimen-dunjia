@@ -4,153 +4,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>奇门遁甲 - 智能随身排盘</title>
+    <title>奇门遁甲 - 智能随身系统</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap');
 
+        :root {
+            --primary: #b8905b;
+            --accent: #00bfa5;
+            --bg: #f5f2ed;
+            --white: #ffffff;
+        }
+
         body {
-            background: #f5f2ed;
+            background: var(--bg);
             font-family: "Microsoft YaHei", sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 15px;
+            padding: 0;
             margin: 0;
             -webkit-tap-highlight-color: transparent;
+            min-height: 100vh;
         }
 
-        .header {
+        /* App Header */
+        .app-header {
+            background: var(--white);
+            width: 100%;
+            padding: 15px 0 10px;
             text-align: center;
-            margin-bottom: 10px;
+            border-bottom: 1px solid #e0dbd5;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .app-header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            letter-spacing: 5px;
+            font-family: 'Ma Shan Zheng', cursive;
             color: #333;
         }
 
-        .header h1 {
-            margin: 0;
-            font-size: 1.4rem;
-            letter-spacing: 4px;
-            font-weight: normal;
-            font-family: 'Ma Shan Zheng', cursive;
-        }
-
-        /* 恢复事项填写区域 */
-        .matter-section {
+        .safe-area {
             width: 100%;
             max-width: 600px;
-            margin-bottom: 8px;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        /* Matter Input Section */
+        .matter-box {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #dcd3d1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .matter-input {
             width: 100%;
             border: none;
-            background: transparent;
-            font-size: 1.15rem;
+            font-size: 1.1rem;
+            color: var(--primary);
             font-weight: bold;
-            color: #b8905b;
             text-align: center;
             outline: none;
-            padding: 5px 0;
-            border-bottom: 1px dashed rgba(184, 144, 91, 0.3);
+            background: transparent;
         }
 
         .matter-input::placeholder {
-            color: rgba(184, 144, 91, 0.4);
+            color: #ccc;
             font-weight: normal;
         }
 
-        .main-info {
-            background: #fff;
-            border: 1px solid #dcd3d1;
-            padding: 12px;
-            width: 100%;
-            max-width: 600px;
-            margin-bottom: 5px;
-            box-sizing: border-box;
+        /* Chart Info Section */
+        .chart-card {
+            background: var(--white);
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #dcd3d1;
+            padding: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 12px;
         }
 
-        .info-r {
+        .info-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 8px;
-            border-bottom: 1px solid #f9f6f2;
-            padding-bottom: 4px;
-            font-size: 0.92rem;
             align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px solid #f9f6f2;
+            font-size: 0.9rem;
         }
 
-        .lbl {
-            color: #777;
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            color: #888;
             width: 60px;
-            display: inline-block;
         }
 
-        .val {
+        .value {
             color: #333;
             flex-grow: 1;
-            text-align: left;
+            font-weight: 500;
         }
 
-        .bazi-grid {
+        .value.highlight {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .value.red {
+            color: #c02;
+            font-weight: bold;
+        }
+
+        /* Bazi Section */
+        .bazi-row {
             display: flex;
-            gap: 10px;
-            margin: 8px 0;
+            gap: 8px;
+            margin: 12px 0;
+            text-align: center;
+            padding: 10px 0;
             border-top: 1px solid #eee;
             border-bottom: 1px solid #eee;
-            padding: 10px 0;
-            text-align: center;
         }
 
-        .bazi-col {
+        .bazi-item {
             flex: 1;
-            display: flex;
-            flex-direction: column;
         }
 
-        .bazi-lbl {
-            color: #b8905b;
-            font-size: 0.8rem;
+        .bazi-l {
+            font-size: 0.75rem;
+            color: var(--primary);
             margin-bottom: 4px;
         }
 
-        .bazi-val {
+        .bazi-v {
             font-size: 1.5rem;
             color: #d32f2f;
             font-weight: bold;
         }
 
-        .bazi-val.green {
+        .bazi-v.green {
             color: #2e7d32;
         }
 
-        .grid {
+        /* Qimen Grid */
+        .grid-container {
+            position: relative;
+            width: 100%;
+            background: #333;
+            border: 2.5px solid #333;
+            border-radius: 8px;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            grid-auto-rows: 135px;
-            background: #333;
-            border: 2.2px solid #333;
+            grid-auto-rows: minmax(130px, auto);
             gap: 1.5px;
-            width: 100%;
-            max-width: 600px;
-            border-radius: 4px;
             overflow: hidden;
-        }
-
-        .palace-wrapper {
-            position: relative;
-            background: #fff;
-            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
         }
 
         .palace {
+            background: var(--white);
+            position: relative;
             height: 100%;
-            padding: 6px;
             display: flex;
             flex-direction: column;
+            padding: 8px;
             box-sizing: border-box;
         }
 
@@ -158,445 +188,471 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            min-height: 33.33%;
+            min-height: 33%;
         }
 
-        .p-left {
-            display: flex;
-            align-items: center;
-            white-space: nowrap;
-        }
-
-        .p-right {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            justify-content: center;
-        }
-
-        .p-shen {
+        .p-unit {
             font-size: 1.05rem;
-            color: #333;
-        }
-
-        .p-xing {
-            font-size: 1.1rem;
-            color: #333;
         }
 
         .p-men {
-            font-size: 1.1rem;
-            color: #333;
             font-weight: bold;
+            font-size: 1.1rem;
         }
 
         .p-stem {
-            font-size: 1.5rem;
-            line-height: 1;
-            white-space: nowrap;
+            font-size: 1.55rem;
             font-weight: bold;
             font-family: serif;
+            line-height: 1;
         }
 
-        .p-yingan {
+        .p-yg {
             color: #aaa;
             font-size: 0.85rem;
             margin-right: 2px;
         }
 
-        .circle {
-            color: #1a9c3e;
+        .xk-o {
+            color: var(--accent);
+            font-weight: bold;
             margin-right: 2px;
-            font-weight: bold;
         }
 
-        .ma-ext {
+        .ma {
             font-size: 1rem;
-            color: #00bfa5;
+            color: var(--accent);
         }
 
-        /* 笔记预览区域 */
-        .note-preview {
-            width: 100%;
-            max-width: 600px;
-            background: #fff;
+        /* Note Section */
+        .note-card {
+            background: var(--white);
             border-radius: 12px;
-            margin-top: 10px;
-            padding: 12px;
-            box-sizing: border-box;
+            padding: 15px;
+            margin-top: 15px;
             border: 1px solid #eee;
-        }
-
-        .note-title {
-            color: #b8905b;
-            font-size: 0.9rem;
-            font-weight: bold;
-            margin-bottom: 8px;
-            border-bottom: 1px solid #f5f2ed;
-            padding-bottom: 5px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .note-content {
-            font-size: 0.95rem;
-            color: #666;
-            line-height: 1.6;
-            min-height: 40px;
-            white-space: pre-wrap;
-        }
-
-        /* 底部导航 */
-        .bottom-nav {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 92%;
-            max-width: 500px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(184, 144, 91, 0.2);
-            border-radius: 40px;
-            display: flex;
-            justify-content: space-around;
-            padding: 8px 5px;
-            z-index: 1000;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #8b7355;
-            font-size: 0.72rem;
-            cursor: pointer;
-            flex: 1;
-        }
-
-        .nav-icon {
-            font-size: 1.35rem;
-            margin-bottom: 2px;
-        }
-
-        .nav-item.act-nj {
-            color: #28a745;
-            font-weight: bold;
-        }
-
-        .modal {
             display: none;
-            position: fixed;
-            z-index: 10000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
         }
 
-        .modal-content {
-            background: #fff;
-            margin: 10% auto;
-            padding: 20px;
-            border-radius: 12px;
-            width: 88%;
-            max-width: 500px;
-            position: relative;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .close {
-            float: right;
-            font-size: 24px;
-            cursor: pointer;
-            color: #999;
-        }
-
-        .cs-label {
-            display: none;
-            position: absolute;
-            bottom: 100%;
-            font-size: 0.6rem;
-            color: #888;
-            white-space: nowrap;
-            margin-bottom: 4px;
-        }
-
-        body.show-cs .cs-label {
+        .note-card.active {
             display: block;
         }
 
-        .naji-badge {
+        .note-head {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #f5f2ed;
+            padding-bottom: 5px;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        .note-body {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        /* Nav Tab */
+        .nav-tab {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #ddd;
+            display: flex;
+            padding: 8px 0 25px;
+            z-index: 2000;
+        }
+
+        .nav-btn {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #999;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .nav-btn.active {
+            color: var(--primary);
+        }
+
+        .nav-btn.nj-on {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .nav-icon {
+            font-size: 1.4rem;
+            margin-bottom: 3px;
+        }
+
+        .nav-text {
+            font-size: 0.7rem;
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 5000;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-body {
+            background: var(--white);
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+            max-width: 600px;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 25px 20px 40px;
+            box-sizing: border-box;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            color: #999;
+        }
+
+        .case-item {
+            padding: 15px;
+            border-bottom: 1px solid #f5f2ed;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .case-item:active {
+            background: #f9f9f9;
+        }
+
+        .case-n {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.05rem;
+        }
+
+        .case-t {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        #drop-box {
+            border: 2px dashed var(--primary);
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 20px;
+            background: #fffdf9;
+            transition: 0.3s;
+        }
+
+        #drop-box.hover {
+            border-color: var(--accent);
+            background: #f0faf9;
+        }
+
+        .nj-bd {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(212, 237, 218, 0.95);
-            color: #155724;
-            border: 1.5px solid #28a745;
-            border-radius: 6px;
-            padding: 4px 10px;
-            font-size: 1rem;
+            border: 2px solid var(--accent);
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            padding: 5px 10px;
+            color: var(--accent);
             font-weight: bold;
-            z-index: 20;
+            display: none;
+            z-index: 10;
             pointer-events: none;
+            animation: nj-pulse 2s infinite;
         }
 
-        .action-bar {
-            margin: 15px 0 100px 0;
-            display: flex;
-            gap: 8px;
-            width: 100%;
-            max-width: 600px;
-        }
+        @keyframes nj-pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 191, 165, 0.4);
+            }
 
-        .action-btn {
-            flex: 1;
-            padding: 10px;
-            background: #00bfa5;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            text-align: center;
-            font-size: 0.88rem;
-        }
+            70% {
+                box-shadow: 0 0 0 10px rgba(0, 191, 165, 0);
+            }
 
-        .dt-input {
-            font-size: 0.95rem;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 6px;
-            flex-grow: 1;
-            outline: none;
-        }
-
-        .dt-btn {
-            background: #00bfa5;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 8px 15px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-left: 5px;
-        }
-
-        #drop-zone {
-            border: 2px dashed #b8905b;
-            border-radius: 12px;
-            padding: 25px;
-            text-align: center;
-            color: #8b7355;
-            background: #fdfdfb;
-            cursor: pointer;
-        }
-
-        #drop-zone.hover {
-            background: #f5f2ed;
-            border-color: #00bfa5;
-        }
-
-        .case-item {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-        }
-
-        .case-item:hover {
-            background: #f9f9f9;
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 191, 165, 0);
+            }
         }
 
         #toast {
-            pointer-events: none;
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 30px;
-            z-index: 20000;
+            background: rgba(0, 0, 0, 0.85);
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 50px;
             display: none;
-            text-align: center;
+            z-index: 10000;
             font-size: 0.9rem;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            margin-bottom: 100px;
+        }
+
+        .btn-m {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-weight: bold;
+            background: var(--accent);
+            color: #fff;
         }
     </style>
 </head>
 
 <body>
-    <div class="header">
+
+    <div class="app-header">
         <h1>奇门遁甲</h1>
     </div>
 
-    <div class="matter-section">
-        <input type="text" id="matter-display" class="matter-input" placeholder="点击输入所测事项...">
-    </div>
-
-    <div class="main-info">
-        <div class="info-r" style="border-bottom: none; margin-bottom: 3px;"><span class="val"
-                style="color:#b8905b; font-weight:bold; letter-spacing:1px;">转盘随身版 · 寄坤 · 置闰</span></div>
-        <div class="info-r"><span class="lbl">日期</span><span class="val"
-                style="display:flex; align-items:center;"><input type="datetime-local" id="custom-dt"
-                    class="dt-input"><button class="dt-btn" onclick="jumpToDate()">排盘</button></span></div>
-        <div class="bazi-grid">
-            <div class="bazi-col">
-                <div class="bazi-lbl">年柱</div>
-                <div class="bazi-val">--</div>
-            </div>
-            <div class="bazi-col">
-                <div class="bazi-lbl">月柱</div>
-                <div class="bazi-val green">--</div>
-            </div>
-            <div class="bazi-col">
-                <div class="bazi-lbl">日柱</div>
-                <div class="bazi-val green">--</div>
-            </div>
-            <div class="bazi-col">
-                <div class="bazi-lbl">时柱</div>
-                <div class="bazi-val">--</div>
-            </div>
+    <div class="safe-area">
+        <div class="matter-box">
+            <input type="text" id="matter" class="matter-input" placeholder="输入当前预测事项...">
         </div>
-        <div class="info-r"><span class="lbl">节气</span><span class="val" id="jieqi-val">--</span></div>
-        <div class="info-r"><span class="lbl">局数</span><span class="val" style="color:#666"
-                id="jushu-val">--</span><span class="lbl">旬首</span><span class="val" style="color:#666"
-                id="xunshou-val">--</span></div>
-        <div class="info-r"><span class="lbl">值符</span><span class="val" style="color:#b8905b"
-                id="zhifu-val">--</span><span class="lbl">值使</span><span class="val" style="color:#b8905b"
-                id="zhishi-val">--</span></div>
-        <div class="info-r" style="border-bottom:none; margin-bottom:0;"><span class="lbl">空亡</span><span class="val kv"
-                id="xunkong-val">--</span><span class="lbl">马星</span><span class="val kv" id="yima-val">--</span></div>
-    </div>
 
-    <div class="grid" id="qimen-grid"></div>
-
-    <div class="note-preview" id="note-area" style="display:none;">
-        <div class="note-title"><span>档案笔记</span><span id="note-id" style="color:#999;font-weight:normal;"></span></div>
-        <div class="note-content" id="note-display"></div>
-    </div>
-
-    <div class="action-bar">
-        <div class="action-btn" onclick="stepTime(-2)">◀ 上一局</div>
-        <div class="action-btn" style="background:#6c757d" onclick="toggleCS()">显示长生</div>
-        <div class="action-btn" onclick="stepTime(2)">下一局 ▶</div>
-    </div>
-
-    <div class="bottom-nav">
-        <div class="nav-item" onclick="resetToNow()"><span class="nav-icon">🏠</span><span>现在</span></div>
-        <div class="nav-item" onclick="openCasesModal()"><span class="nav-icon">📁</span><span>档案库</span></div>
-        <div class="nav-item" id="nav-naji" onclick="toggleNaji()"><span class="nav-icon">✨</span><span>吉位开启</span>
+        <div class="chart-card">
+            <div class="info-row"><span class="label">日期</span><span class="value"
+                    style="display:flex;align-items:center;"><input type="datetime-local" id="dt-pk"
+                        style="border:none;flex-grow:1;outline:none;font-size:1rem;color:#c02;font-weight:bold;"><button
+                        onclick="pk()"
+                        style="background:var(--accent);color:#fff;border:none;border-radius:4px;padding:4px 10px;margin-left:5px;">排盘</button></span>
+            </div>
+            <div class="bazi-row">
+                <div class="bazi-item">
+                    <div class="bazi-l">年柱</div>
+                    <div class="bazi-v" id="bz-y">--</div>
+                </div>
+                <div class="bazi-item">
+                    <div class="bazi-l">月柱</div>
+                    <div class="bazi-v green" id="bz-m">--</div>
+                </div>
+                <div class="bazi-item">
+                    <div class="bazi-l">日柱</div>
+                    <div class="bazi-v green" id="bz-d">--</div>
+                </div>
+                <div class="bazi-item">
+                    <div class="bazi-l">时柱</div>
+                    <div class="bazi-v" id="bz-t">--</div>
+                </div>
+            </div>
+            <div class="info-row"><span class="label">节气</span><span class="value" id="jq-v">--</span></div>
+            <div class="info-row"><span class="label">局数</span><span class="value highlight" id="js-v">--</span><span
+                    class="label">旬首</span><span class="value highlight" id="xs-v">--</span></div>
+            <div class="info-row"><span class="label">值符值使</span><span class="value" id="zfzs-v"
+                    style="color:var(--primary)">--</span></div>
+            <div class="info-row"><span class="label">空亡马星</span><span class="value red" id="xkm-v">--</span></div>
         </div>
-        <div class="nav-item" onclick="shareChart()"><span class="nav-icon">📤</span><span>分享</span></div>
+
+        <div class="grid-container" id="grid"></div>
+
+        <div class="note-card" id="note-card">
+            <div class="note-head"><span>档案记录</span><span id="case-id" style="font-weight:normal;opacity:0.5;"></span>
+            </div>
+            <div class="note-body" id="note-body"></div>
+        </div>
+
+        <div class="action-btns"><button class="btn-m" onclick="step(-2)">◀ 上一局</button><button class="btn-m"
+                style="background:#8b7355" onclick="toggleCS()">显示长生</button><button class="btn-m" onclick="step(2)">下一局
+                ▶</button></div>
+    </div>
+
+    <div class="nav-tab">
+        <div class="nav-btn active" onclick="goNow()"><span class="nav-icon">🏠</span><span class="nav-text">现在</span>
+        </div>
+        <div class="nav-btn" onclick="openLib()"><span class="nav-icon">📂</span><span class="nav-text">档案库</span></div>
+        <div class="nav-btn" id="nj-btn" onclick="toggleNJ()"><span class="nav-icon">✨</span><span
+                class="nav-text">吉位</span></div>
+        <div class="nav-btn" onclick="share()"><span class="nav-icon">📤</span><span class="nav-text">分享</span></div>
+    </div>
+
+    <div id="lib-modal" class="modal">
+        <div class="modal-body">
+            <span class="modal-close" onclick="closeM('lib-modal')">&times;</span>
+            <h3 style="color:var(--primary);margin-top:0;">档案库接入</h3>
+            <div id="drop-box">📂 这里支持点击上传或拖拽<br><br><small style="opacity:0.6">只需导入一次 cases.db，以后自动记住</small></div>
+            <div id="c-list"></div>
+        </div>
+    </div>
+
+    <div id="p-modal" class="modal">
+        <div class="modal-body">
+            <span class="modal-close" onclick="closeM('p-modal')">&times;</span>
+            <h3 id="p-t" style="color:var(--primary);margin-top:0;"></h3>
+            <div id="p-c" style="line-height:1.6;color:#666;"></div>
+        </div>
     </div>
 
     <div id="toast"></div>
-    <div id="casesModal" class="modal">
-        <div class="modal-content"><span class="close" onclick="closeModal('casesModal')">&times;</span>
-            <h3 style="color:#b8905b">案例库解析</h3>
-            <div id="drop-zone">📂 点击或将 cases.db 拖入此区域</div>
-            <div id="case-list-box" style="margin-top:20px;max-height:50vh;overflow-y:auto;"></div>
-        </div>
-    </div>
-    <div id="palaceModal" class="modal">
-        <div class="modal-content"><span class="close" onclick="closeModal('palaceModal')">&times;</span>
-            <h3 id="palace-title" style="color:#b8905b"></h3>
-            <div id="palace-content"></div>
-        </div>
-    </div>
 
     <script>
-        const T = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'], D = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'], SQ = ['戊', '己', '庚', '辛', '壬', '癸', '丁', '丙', '乙'], ZO = [1, 8, 3, 4, 9, 2, 7, 6], BO = { 1: '休门', 2: '死门', 3: '伤门', 4: '杜门', 6: '开门', 7: '惊门', 8: '生门', 9: '景门' }, XO = { 1: '天蓬', 2: '天芮', 3: '天冲', 4: '天辅', 5: '天禽', 6: '天心', 7: '天柱', 8: '天任', 9: '天英' }, BS = ['值符', '螣蛇', '太阴', '六合', '白虎', '玄武', '九地', '九天'];
-        let curD = new Date();
-        function updateUI(r) {
-            document.getElementById('jieqi-val').innerText = r.jq;
-            document.getElementById('jushu-val').innerText = r.du + r.ju + "局(" + r.sy + ")";
-            document.getElementById('xunshou-val').innerText = r.xs;
-            document.getElementById('zhifu-val').innerText = r.zf;
-            document.getElementById('zhishi-val').innerText = r.zs;
-            document.getElementById('xunkong-val').innerText = r.xk;
-            document.getElementById('yima-val').innerText = ["", "坎1", "坤2", "震3", "巽4", "中5", "乾6", "兑7", "艮8", "离9"][r.ym];
-            const bz = document.querySelectorAll('.bazi-val');
-            bz[0].innerText = r.lu.getYearInGanZhiExact(); bz[1].innerText = r.lu.getMonthInGanZhiExact(); bz[2].innerText = r.lu.getDayInGanZhiExact(); bz[3].innerText = r.lu.getTimeInGanZhi();
-            const g = document.getElementById('qimen-grid'); g.innerHTML = '';
+        const TI = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'], DI = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'], SQ = ['戊', '己', '庚', '辛', '壬', '癸', '丁', '丙', '乙'], ZO = [1, 8, 3, 4, 9, 2, 7, 6], BO = { 1: '休门', 2: '死门', 3: '伤门', 4: '杜门', 6: '开门', 7: '惊门', 8: '生门', 9: '景门' }, XO = { 1: '天蓬', 2: '天芮', 3: '天冲', 4: '天辅', 5: '天禽', 6: '天心', 7: '天柱', 8: '天任', 9: '天英' }, BS = ['值符', '螣蛇', '太阴', '六合', '白虎', '玄武', '九地', '九天'];
+        let cT = new Date();
+
+        function rdr(r) {
+            document.getElementById('jq-v').innerText = r.jq;
+            document.getElementById('js-v').innerText = r.du + r.ju + '局(' + r.sy + ')';
+            document.getElementById('xs-v').innerText = r.xs;
+            document.getElementById('zfzs-v').innerText = `符：${r.zf} / 使：${r.zs}`;
+            document.getElementById('xkm-v').innerText = `空：${r.xk} 马：${["", "坎1", "坤2", "震3", "巽4", "中5", "乾6", "兑7", "艮8", "离9"][r.ym]}`;
+            const bz = ['bz-y', 'bz-m', 'bz-d', 'bz-t'];
+            const bzv = [r.lu.getYearInGanZhiExact(), r.lu.getMonthInGanZhiExact(), r.lu.getDayInGanZhiExact(), r.lu.getTimeInGanZhi()];
+            bz.forEach((id, i) => document.getElementById(id).innerText = bzv[i]);
+            const g = document.getElementById('grid'); g.innerHTML = '';
             [4, 9, 2, 3, 5, 7, 8, 1, 6].forEach(n => {
-                const f = r.jg[n], w = document.createElement('div'); w.className = 'palace-wrapper'; w.onclick = () => showP(n, r);
-                if (n === 5) { w.innerHTML = `<div class="palace" style="justify-content:center;align-items:center;"><span class="p-stem" style="color:#666">${f.dp}</span></div>`; g.appendChild(w); return; }
-                const tpT = r.mk[n].gt[f.tp] || [], dpT = r.mk[n].gt[f.dp] || [], getS = t => t.includes('击刑') ? 'color:#8b00cc;font-weight:bold;' : t.includes('门迫') ? 'color:#cc0000;font-weight:bold;' : t.includes('入墓') ? 'color:#cc8800;font-weight:bold;' : t.includes('符使') ? 'color:#00bfa5;font-weight:bold;' : '';
-                let njH = ""; const njR = { 1: ['开门'], 2: ['开门', '景门'], 3: ['休门', '景门'], 4: ['休门', '景门'], 6: ['休门', '生门'], 7: ['休门', '生门', '开门'], 8: ['开门', '景门'], 9: ['生门'] };
-                if (njR[n]?.includes(f.me) && !r.mk[n].ts.includes('门迫') && !tpT.includes('击刑') && f.sn !== '白虎' && !['天蓬', '天芮'].includes(f.xi)) njH = `<div class="naji-badge" style="display:${document.getElementById('nav-naji').classList.contains('act-nj') ? 'flex' : 'none'}">吉位</div>`;
-                w.innerHTML = `${njH}<div class="palace"><div class="p-row"><div class="p-left"><span class="p-shen">${r.xk.includes(D[["", 0, 7, 2, 4, 0, 10, 8, 1, 6][n]]) ? '<span class="circle">○</span>' : ''}${f.sn}</span></div><div class="p-right">${n === r.ym ? '<span class="ma-ext">🐎</span>' : ''}</div></div><div class="p-row"><div class="p-left"><span class="p-yingan" style="color:#aaa">${f.yg}</span><span class="p-xing">${f.xi}</span></div><div class="p-right"><div class="stem-group"><span class="cs-label">${calcCS(f.tp, n)}</span><span class="p-stem" style="${getS(tpT)}">${f.tp}</span></div></div></div><div class="p-row"><div class="p-left"><span class="p-men" style="${getS(r.mk[n].ts)}">${f.me}</span></div><div class="p-right"><div class="stem-group"><span class="cs-label">${calcCS(f.dp, n)}</span><span class="p-stem" style="${getS(dpT)}">${f.dp}</span></div></div></div></div>`;
+                const f = r.jg[n], w = document.createElement('div'); w.className = 'palace'; w.onclick = () => shP(n, r);
+                if (n === 5) { w.innerHTML = `<div class="palace" style="justify-content:center;align-items:center;"><span class="p-stem" style="color:#999">${f.dp}</span></div>`; g.appendChild(w); return; }
+                const tT = r.mk[n].gt[f.tp] || [], dT = r.mk[n].gt[f.dp] || [], getS = t => t.includes('击刑') ? 'color:#8b00cc;' : t.includes('门迫') ? 'color:#cc0000;' : t.includes('入墓') ? 'color:#cc8800;' : t.includes('符使') ? 'color:var(--accent);' : '';
+
+                let njH = ""; const njR = { 1: ['休门'], 2: ['生门'], 6: ['开门'], 8: ['生门'], 9: ['景门'] };
+                if (njR[n]?.includes(f.me) && !r.mk[n].ts.includes('门迫') && !tT.includes('击刑') && f.sn !== '白虎') njH = `<div class="nj-bd" style="display:${document.getElementById('nj-btn').classList.contains('nj-on') ? 'block' : 'none'}">吉位</div>`;
+
+                w.innerHTML = `${njH}<div class="p-row"><div class="p-left"><span class="p-unit">${r.xk.includes(DI[["", 0, 7, 2, 4, 0, 10, 8, 1, 6][n]]) ? '<span class="xk-o">○</span>' : ''}${f.sn}</span></div><div class="p-right">${n === r.ym ? '<span class="ma">🐎</span>' : ''}</div></div><div class="p-row"><div class="p-left"><span class="p-yg">${f.yg}</span><span class="p-unit">${f.xi}</span></div><div class="p-right"><div style="display:flex;flex-direction:column;align-items:flex-end;"><span class="cs-label" style="display:none;font-size:0.6rem;color:#999;">${calcCS(f.tp, n)}</span><span class="p-stem" style="${getS(tT)}">${f.tp}</span></div></div></div><div class="p-row"><div class="p-left"><span class="p-men" style="${getS(r.mk[n].ts)}">${f.me}</span></div><div class="p-right"><div style="display:flex;flex-direction:column;align-items:flex-end;"><span class="cs-label" style="display:none;font-size:0.6rem;color:#999;">${calcCS(f.dp, n)}</span><span class="p-stem" style="${getS(dT)}">${f.dp}</span></div></div></div>`;
                 g.appendChild(w);
             });
+            if (document.body.classList.contains('show-cs')) Array.from(document.querySelectorAll('.cs-label')).forEach(l => l.style.display = 'block');
         }
-        function calcCS(g, p) { const s = { '甲': '亥', '乙': '午', '丙': '寅', '丁': '酉', '戊': '寅', '己': '酉', '庚': '巳', '辛': '子', '壬': '申', '癸': '卯' }, d = { '甲': 1, '乙': -1, '丙': 1, '丁': -1, '戊': 1, '己': -1, '庚': 1, '辛': -1, '壬': 1, '癸': -1 }, st = ["长生", "沐浴", "冠带", "临官", "帝旺", "衰", "病", "死", "墓", "绝", "胎", "养"]; if (!s[g]) return ""; const t = { 1: ['子'], 8: ['丑', '寅'], 3: ['卯'], 4: ['辰', '巳'], 9: ['午'], 2: ['未', '申'], 7: ['酉'], 6: ['戌', '亥'], 5: ['未', '申'] }[p]; const si = D.indexOf(s[g]); const ti = D.indexOf(t[0]); return st[(d[g] === 1 ? (ti - si + 12) % 12 : (si - ti + 12) % 12)]; }
+        function calcCS(g, p) { const s = { '甲': '亥', '乙': '午', '丙': '寅', '丁': '酉', '戊': '寅', '己': '酉', '庚': '巳', '辛': '子', '壬': '申', '癸': '卯' }, d = { '甲': 1, '乙': -1, '丙': 1, '丁': -1, '戊': 1, '己': -1, '庚': 1, '辛': -1, '壬': 1, '癸': -1 }, st = ["长生", "沐浴", "冠带", "临官", "帝旺", "衰", "病", "死", "墓", "绝", "胎", "养"]; if (!s[g]) return ""; const t = { 1: ['子'], 8: ['丑', '寅'], 3: ['卯'], 4: ['辰', '巳'], 9: ['午'], 2: ['未', '申'], 7: ['酉'], 6: ['戌', '亥'], 5: ['未', '申'] }[p]; const si = DI.indexOf(s[g]); const ti = DI.indexOf(t[0]); return st[(d[g] === 1 ? (ti - si + 12) % 12 : (si - ti + 12) % 12)]; }
         function paipan(date) {
             try {
-                const sol = window.Solar.fromDate(date), lun = sol.getLunar(), hg = lun.getTimeInGanZhi(), xs = getXS(hg), dg = { '甲子': '戊', '甲戌': '己', '甲申': '庚', '甲午': '辛', '甲辰': '壬', '甲寅': '癸' }[xs], jn = lun.getPrevJieQi().getName(), ji = ['冬至', '小寒', '大寒', '立春', '雨水', '惊蛰', '春分', '清明', '谷雨', '立夏', '小满', '芒种', '夏至', '小暑', '大暑', '立秋', '处暑', '白露', '秋分', '寒露', '霜降', '立冬', '小雪', '大雪'].indexOf(jn), dayOrder = (10 + Math.floor((new Date(sol.getYear(), sol.getMonth() - 1, sol.getDay()) - new Date(1900, 0, 1)) / 86400000)) % 60, sy = Math.floor((dayOrder % 15) / 5), ju = [[1, 7, 4], [2, 8, 5], [3, 9, 6], [8, 5, 2], [9, 6, 3], [1, 7, 4], [3, 9, 6], [4, 1, 7], [5, 2, 8], [4, 1, 7], [5, 2, 8], [6, 3, 9], [9, 3, 6], [8, 2, 5], [7, 1, 4], [2, 5, 8], [1, 4, 7], [9, 3, 6], [7, 1, 4], [6, 9, 3], [5, 8, 2], [6, 9, 3], [5, 8, 2], [4, 7, 1]][ji][sy], dp = {};[1, 2, 3, 4, 5, 6, 7, 8, 9].forEach((g, i) => { dp[ji < 12 ? [1, 2, 3, 4, 5, 6, 7, 8, 9][([1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(ju) + i) % 9] : [1, 2, 3, 4, 5, 6, 7, 8, 9][([1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(ju) - i + 9) % 9]] = SQ[i]; });
-                const xg = Object.keys(dp).find(k => dp[k] === dg), xa = xg == 5 ? 2 : parseInt(xg), sg = hg[0] === '甲' ? dg : hg[0], sgG = Object.keys(dp).find(k => dp[k] === sg), sa = sgG == 5 ? 2 : parseInt(sgG); let cg = parseInt(xg); for (let i = 0; i < ((D.indexOf(hg[1]) - D.indexOf(xs.substring(1)) + 12) % 12); i++)cg = ji < 12 ? (cg == 9 ? 1 : cg + 1) : (cg == 1 ? 9 : cg - 1);
-                const zt = cg == 5 ? 2 : cg, get = (g) => ZO.indexOf(g == 5 ? 2 : g), xp = get(xa), sp = get(sa), zp = get(zt), jg = {}, zhishi = BO[xg] || '死门';
+                const sol = window.Solar.fromDate(date), lun = sol.getLunar(), hg = lun.getTimeInGanZhi(), xs = getXS(hg), dg = { '甲子': '戊', '甲戌': '己', '甲申': '庚', '甲午': '辛', '甲辰': '壬', '甲寅': '癸' }[xs], jn = lun.getPrevJieQi().getName(), ji = ['冬至', '小寒', '大寒', '立春', '雨水', '惊蛰', '春分', '清明', '谷雨', '立夏', '小满', '芒种', '夏至', '小暑', '大暑', '立秋', '处暑', '白露', '秋分', '寒露', '霜降', '立冬', '小雪', '大雪'].indexOf(jn), dayO = (10 + Math.floor((new Date(sol.getYear(), sol.getMonth() - 1, sol.getDay()) - new Date(1900, 0, 1)) / 86400000)) % 60, sy = Math.floor((dayO % 15) / 5), ju = [[1, 7, 4], [2, 8, 5], [3, 9, 6], [8, 5, 2], [9, 6, 3], [1, 7, 4], [3, 9, 6], [4, 1, 7], [5, 2, 8], [4, 1, 7], [5, 2, 8], [6, 3, 9], [9, 3, 6], [8, 2, 5], [7, 1, 4], [2, 5, 8], [1, 4, 7], [9, 3, 6], [7, 1, 4], [6, 9, 3], [5, 8, 2], [6, 9, 3], [5, 8, 2], [4, 7, 1]][ji][sy], dp = {};[1, 2, 3, 4, 5, 6, 7, 8, 9].forEach((g, i) => { dp[ji < 12 ? [1, 2, 3, 4, 5, 6, 7, 8, 9][([1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(ju) + i) % 9] : [1, 2, 3, 4, 5, 6, 7, 8, 9][([1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(ju) - i + 9) % 9]] = SQ[i]; });
+                const xg = Object.keys(dp).find(k => dp[k] === dg), xa = xg == 5 ? 2 : parseInt(xg), sg = hg[0] === '甲' ? dg : hg[0], sgG = Object.keys(dp).find(k => dp[k] === sg), sa = sgG == 5 ? 2 : parseInt(sgG), st = (DI.indexOf(hg[1]) - DI.indexOf(xs.substring(1)) + 12) % 12; let cg = parseInt(xg); for (let i = 0; i < st; i++)cg = ji < 12 ? (cg == 9 ? 1 : cg + 1) : (cg == 1 ? 9 : cg - 1);
+                const zt = cg == 5 ? 2 : cg, get = (g) => ZO.indexOf(g == 5 ? 2 : g), xp = get(xa), sp = get(sa), zp = get(zt), jg = {}, zs = BO[xg] || '死门';
                 for (let n = 1; n <= 9; n++) { if (n == 5) { jg[n] = { dp: dp[5], yg: '' }; continue; } const p = ZO.indexOf(n), xiG = ZO[(p - (sp - xp + 8) % 8 + 8) % 8], meG = ZO[(p - (zp - xp + 8) % 8 + 8) % 8]; jg[n] = { dp: dp[n], tp: dp[xiG] || dp[5], xi: XO[xiG], me: BO[meG] || '死门', sn: BS[ji < 12 ? (p - sp + 8) % 8 : (sp - p + 8) % 8] }; }
                 const ym = {}; for (let i = 0; i < 9; i++)ym[ji < 12 ? (zt + i - 1) % 9 + 1 : (zt - i + 9 - 1) % 9 + 1] = SQ[(SQ.indexOf(sg) + i) % 9]; for (let n = 1; n <= 9; n++)jg[n].yg = ym[n];
                 const mk = {}; for (let n = 1; n <= 9; n++) { if (n == 5) continue; const m = { ts: [], gt: {} }; if (['伤门', '杜门'].includes(jg[n].me) && [2, 8].includes(n)) m.ts.push('门迫'); if (['开门', '惊门'].includes(jg[n].me) && [3, 4].includes(n)) m.ts.push('门迫');[jg[n].tp, jg[n].dp, jg[n].yg].forEach(gan => { const t = []; if ({ '己': [2], '戊': [3], '壬': [4], '癸': [4], '庚': [8], '辛': [9] }[gan]?.includes(n)) t.push('击刑'); if ({ '甲': [2], '癸': [2], '乙': [6], '丙': [6], '戊': [6], '丁': [8], '己': [8], '庚': [8], '辛': [4], '壬': [4] }[gan]?.includes(n)) t.push('入墓'); m.gt[gan] = t; }); mk[n] = m; }
-                return { lu: lun, jg, zf: XO[xa], zs: zhishi, xs, du: ji < 12 ? '阳遁' : '阴遁', ju, sy: ['上元', '中元', '下元'][sy], jq: jn, xk: lun.getEightChar().getDayXunKong(), ym: { '申': 8, '子': 8, '辰': 8, '寅': 2, '午': 2, '戌': 2, '巳': 6, '酉': 6, '丑': 6, '亥': 4, '卯': 4, '未': 4 }[hg[1]], mk };
+                return { lu: lun, jg, zf: XO[xa], zs, xs, du: ji < 12 ? '阳遁' : '阴遁', ju, sy: ['上元', '中元', '下元'][sy], jq: jn, xk: lun.getEightChar().getDayXunKong(), ym: { '申': 8, '子': 8, '辰': 8, '寅': 2, '午': 2, '戌': 2, '巳': 6, '酉': 6, '丑': 6, '亥': 4, '卯': 4, '未': 4 }[hg[1]], mk };
             } catch (e) { console.error(e); return null; }
         }
-        function getXS(gz) { const gi = T.indexOf(gz[0]), zi = D.indexOf(gz[1]); return "甲" + D[(zi - gi + 12) % 12]; }
-        function resetToNow() { curD = new Date(); document.getElementById('custom-dt').value = new Date(curD.getTime() - curD.getTimezoneOffset() * 60000).toISOString().substring(0, 16); document.getElementById('matter-display').value = ''; document.getElementById('note-area').style.display = 'none'; const r = paipan(curD); if (r) updateUI(r); }
-        function jumpToDate() { const v = document.getElementById('custom-dt').value; if (v) { curD = new Date(v); const r = paipan(curD); if (r) updateUI(r); } }
-        function stepTime(h) { curD.setHours(curD.getHours() + h); document.getElementById('custom-dt').value = new Date(curD.getTime() - curD.getTimezoneOffset() * 60000).toISOString().substring(0, 16); const r = paipan(curD); if (r) updateUI(r); if (document.getElementById('note-area').style.display === 'block') showToast('当前为手动推演模式'); }
-        function toggleCS() { document.body.classList.toggle('show-cs'); showToast(document.body.classList.contains('show-cs') ? '长生显示' : '已关闭'); }
-        function toggleNaji() { const b = document.getElementById('nav-naji'); const a = b.classList.toggle('act-nj'); document.querySelectorAll('.naji-badge').forEach(i => i.style.display = a ? 'flex' : 'none'); showToast(a ? '启吉位滤镜' : '已关闭'); }
-        function openCasesModal() { document.getElementById('casesModal').style.display = 'block'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function showP(n, r) { document.getElementById('palace-title').innerText = ["", "坎一", "坤二", "震三", "巽四", "中五", "乾六", "兑七", "艮八", "离九"][n]; document.getElementById('palace-content').innerHTML = `正在为您解析 ${n} 宫格局方案...`; document.getElementById('palaceModal').style.display = 'block'; }
-        function shareChart() { showToast('正在生成分享图中...'); html2canvas(document.body).then(c => { const l = document.createElement('a'); l.download = 'Qimen_Web.png'; l.href = c.toDataURL(); l.click(); }); }
-        function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000); }
-        function showHelp() { document.getElementById('helpModal').style.display = 'block'; }
+        function getXS(gz) { const gi = TI.indexOf(gz[0]), zi = DI.indexOf(gz[1]); return "甲" + DI[(zi - gi + 12) % 12]; }
+        function goNow() { cT = new Date(); syncPK(); }
+        function syncPK() { document.getElementById('dt-pk').value = new Date(cT.getTime() - cT.getTimezoneOffset() * 60000).toISOString().substring(0, 16); const r = paipan(cT); if (r) rdr(r); }
+        function pk() { const v = document.getElementById('dt-pk').value; if (v) { cT = new Date(v); const r = paipan(cT); if (r) rdr(r); } }
+        function step(h) { cT.setHours(cT.getHours() + h); syncPK(); }
+        function toggleCS() { document.body.classList.toggle('show-cs'); syncPK(); showT('长生状态切换'); }
+        function toggleNJ() { const b = document.getElementById('nj-btn'); const a = b.classList.toggle('nj-on'); document.querySelectorAll('.nj-bd').forEach(i => i.style.display = a ? 'block' : 'none'); showT(a ? '已开启吉位视野' : '已关闭'); }
+        function shP(n, r) { document.getElementById('p-t').innerText = ["", "坎一宫", "坤二宫", "震三宫", "巽四宫", "中五宫", "乾六宫", "兑七宫", "艮八宫", "离九宫"][n]; document.getElementById('p-c').innerText = `此处显示 ${n} 宫的详细解析建议...`; document.getElementById('p-modal').style.display = 'block'; }
+        function closeM(id) { document.getElementById(id).style.display = 'none'; }
+        function showT(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000); }
+        function openLib() { document.getElementById('lib-modal').style.display = 'block'; }
+        function share() { showT('正在生成分享卡片...'); html2canvas(document.body).then(canvas => { const link = document.createElement('a'); link.download = 'QiMen_App_Card.png'; link.href = canvas.toDataURL(); link.click(); }); }
 
-        // --- Database Logic ---
-        let DB = null;
-        async function initDB(buffer) {
-            const SQL = await initSqlJs({ locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/${file}` });
-            DB = new SQL.Database(new Uint8Array(buffer));
-            const res = DB.exec("SELECT name, chart_time, notes, id FROM cases ORDER BY chart_time DESC");
+        // --- DB Persistent Logic ---
+        let sqlDB = null;
+        const dbName = 'QimenDBStore';
+        const storeName = 'dbFile';
+
+        async function saveDB(arrayBuffer) {
+            const request = indexedDB.open(dbName, 1);
+            request.onupgradeneeded = e => e.target.result.createObjectStore(storeName);
+            request.onsuccess = e => {
+                const db = e.target.result;
+                const tx = db.transaction(storeName, 'readwrite');
+                tx.objectStore(storeName).put(arrayBuffer, 'current');
+            };
+        }
+
+        async function loadSavedDB() {
+            const request = indexedDB.open(dbName, 1);
+            request.onupgradeneeded = e => e.target.result.createObjectStore(storeName);
+            request.onsuccess = e => {
+                const db = e.target.result;
+                const tx = db.transaction(storeName, 'readonly');
+                tx.objectStore(storeName).get('current').onsuccess = event => {
+                    if (event.target.result) {
+                        initSQL(event.target.result);
+                        showT('已自动载入上次的档案库');
+                    }
+                };
+            };
+        }
+
+        async function initSQL(buffer) {
+            const config = { locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/${file}` };
+            const SQL = await initSqlJs(config);
+            sqlDB = new SQL.Database(new Uint8Array(buffer));
+            const res = sqlDB.exec("SELECT name, chart_time, notes, id FROM cases ORDER BY chart_time DESC");
             if (res.length > 0) {
-                document.getElementById('case-list-box').innerHTML = res[0].values.map(v => `
-            <div class="case-item" onclick="loadCase('${v[0]}','${v[1]}','${v[2]}','${v[3]}')">
-                <div style="font-weight:bold">${v[0] || '未命名事项'} <span style="font-weight:normal;color:#999;font-size:0.8rem">ID:${v[3]}</span></div>
-                <div style="font-size:0.8rem;color:#999">${v[1]}</div>
-                <div style="font-size:0.85rem;color:#666;margin-top:4px">${v[2] ? v[2].substring(0, 35) + '...' : '无摘要'}</div>
+                document.getElementById('c-list').innerHTML = res[0].values.map(v => `
+            <div class="case-item" onclick="loadC('${v[0]}','${v[1]}','${v[2]}','${v[3]}')">
+                <div class="case-n">${v[0] || '未定事项'}</div>
+                <div class="case-t">${v[1]}</div>
             </div>
         `).join('');
             }
         }
-        function loadCase(m, dt, n, id) {
-            document.getElementById('matter-display').value = m;
-            document.getElementById('custom-dt').value = dt.replace(' ', 'T');
-            document.getElementById('note-display').innerText = n || '暂无详细记录';
-            document.getElementById('note-id').innerText = `档案号: ${id}`;
-            document.getElementById('note-area').style.display = 'block';
-            jumpToDate(); closeModal('casesModal');
+
+        function loadC(m, dt, n, id) {
+            document.getElementById('matter').value = m;
+            document.getElementById('dt-pk').value = dt.replace(' ', 'T');
+            document.getElementById('note-body').innerText = n || '无详细笔记记录';
+            document.getElementById('case-id').innerText = `ID: ${id}`;
+            document.getElementById('note-card').classList.add('active');
+            pk(); closeM('lib-modal');
         }
-        const drop = document.getElementById('drop-zone');
-        drop.onclick = () => { const i = document.createElement('input'); i.type = 'file'; i.onchange = e => handle(e.target.files[0]); i.click(); };
+
+        const drop = document.getElementById('drop-box');
+        drop.onclick = () => { const i = document.createElement('input'); i.type = 'file'; i.onchange = e => handleF(e.target.files[0]); i.click(); };
         drop.ondragover = e => { e.preventDefault(); drop.classList.add('hover'); };
         drop.ondragleave = () => drop.classList.remove('hover');
-        drop.ondrop = e => { e.preventDefault(); drop.classList.remove('hover'); handle(e.dataTransfer.files[0]); };
-        function handle(f) { if (f) { const r = new FileReader(); r.onload = e => initDB(e.target.result); r.readAsArrayBuffer(f); showToast('档案库解析中...'); } }
-        window.onload = () => { setTimeout(resetToNow, 300); };
+        drop.ondrop = e => { e.preventDefault(); drop.classList.remove('hover'); handleF(e.dataTransfer.files[0]); };
+        function handleF(file) {
+            if (!file) return;
+            const r = new FileReader();
+            r.onload = e => { saveDB(e.target.result); initSQL(e.target.result); };
+            r.readAsArrayBuffer(file);
+            showT('正在解析并保存档案库...');
+        }
+
+        window.onload = () => { setTimeout(() => { syncPK(); loadSavedDB(); }, 500); };
     </script>
-    <div id="helpModal" class="modal">
-        <div class="modal-content"><span class="close" onclick="closeModal('helpModal')">&times;</span>
-            <h3 style="color:#b8905b">随身版说明</h3>
-            <p>此网页版采用纯 JavaScript 引擎，旨在提供精美的视觉排盘和便捷的吉位参考。</p>
-            <p><b>特别说明</b>：网页版无法直接自动同步您电脑里的案例库文件。只需点击“档案库”并将 cases.db 拖入，即可完整查阅您的历史事项和笔记。</p>
-        </div>
-    </div>
 </body>
 
 </html>
