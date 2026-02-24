@@ -444,26 +444,6 @@
             background: var(--accent);
             color: #fff;
         }
-
-        .nj-sec {
-            margin-bottom: 12px;
-            border-bottom: 1px dashed #eee;
-            padding-bottom: 8px;
-        }
-
-        .nj-lbl {
-            color: #b8905b;
-            font-weight: bold;
-            display: block;
-            margin-bottom: 4px;
-            font-size: 0.9rem;
-        }
-
-        .nj-val {
-            color: #444;
-            line-height: 1.5;
-            font-size: 1rem;
-        }
     </style>
 </head>
 
@@ -529,7 +509,7 @@
         </div>
         <div class="nav-btn" onclick="openLib()"><span class="nav-icon">📂</span><span class="nav-text">档案库</span></div>
         <div class="nav-btn" id="nj-btn" onclick="toggleNJ()"><span class="nav-icon">✨</span><span
-                class="nav-text">纳吉</span></div>
+                class="nav-text">吉位</span></div>
         <div class="nav-btn" onclick="share()"><span class="nav-icon">📤</span><span class="nav-text">分享</span></div>
     </div>
 
@@ -554,9 +534,6 @@
 
     <script>
         const TI = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'], DI = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'], SQ = ['戊', '己', '庚', '辛', '壬', '癸', '丁', '丙', '乙'], ZO = [1, 8, 3, 4, 9, 2, 7, 6], BO = { 1: '休门', 2: '死门', 3: '伤门', 4: '杜门', 6: '开门', 7: '惊门', 8: '生门', 9: '景门' }, XO = { 1: '天蓬', 2: '天芮', 3: '天冲', 4: '天辅', 5: '天禽', 6: '天心', 7: '天柱', 8: '天任', 9: '天英' }, BS = ['值符', '螣蛇', '太阴', '六合', '白虎', '玄武', '九地', '九天'];
-        const WX_DATA = { "甲": "龙、高贵物品", "乙": "花草、艺术品、管道", "丙": "镜子、红火、印章", "丁": "灯火、利刃、香火", "戊": "钱币、陶瓷、理财", "己": "坐垫、垃圾、旧绳", "庚": "大刀、器械、硬石", "辛": "珠宝、颗粒、密钥", "壬": "水管、江河、流通", "癸": "清茶、酒水、厕浴", "休门": "水、贵人", "生门": "财库、生机", "死门": "墓碑、死物", "景门": "文书、电器" };
-        const XW_DATA = { "甲": "高级装扮", "乙": "手写日记、理草", "丙": "点亮灯光、照镜", "丁": "吸管喝水、诵经", "戊": "整理钱包、吃肉", "己": "小零食、静坐", "庚": "抄经阅读、决断", "辛": "忏悔改变、吃辣", "壬": "跑步喝水、清洗", "癸": "洗脸喝茶、行走", "值符": "穿戴大方", "太阴": "素净典雅", "休门": "放松沐浴", "生门": "求财规划", "开门": "正式工作", "景门": "点香薰灯" };
-
         let cT = new Date();
 
         function rdr(r) {
@@ -575,41 +552,13 @@
                 const tT = r.mk[n].gt[f.tp] || [], dT = r.mk[n].gt[f.dp] || [], getS = t => t.includes('击刑') ? 'color:#8b00cc;' : t.includes('门迫') ? 'color:#cc0000;' : t.includes('入墓') ? 'color:#cc8800;' : t.includes('符使') ? 'color:var(--accent);' : '';
 
                 let njH = ""; const njR = { 1: ['休门'], 2: ['生门'], 6: ['开门'], 8: ['生门'], 9: ['景门'] };
-                if (njR[n]?.includes(f.me) && !r.mk[n].ts.includes('门迫') && !tT.includes('击刑') && f.sn !== '白虎') njH = `<div class="nj-bd" style="display:${document.getElementById('nj-btn').classList.contains('nj-on') ? 'block' : 'none'}">纳吉</div>`;
+                if (njR[n]?.includes(f.me) && !r.mk[n].ts.includes('门迫') && !tT.includes('击刑') && f.sn !== '白虎') njH = `<div class="nj-bd" style="display:${document.getElementById('nj-btn').classList.contains('nj-on') ? 'block' : 'none'}">吉位</div>`;
 
                 w.innerHTML = `${njH}<div class="p-row"><div class="p-left"><span class="p-unit">${r.xk.includes(DI[["", 0, 7, 2, 4, 0, 10, 8, 1, 6][n]]) ? '<span class="xk-o">○</span>' : ''}${f.sn}</span></div><div class="p-right">${n === r.ym ? '<span class="ma">🐎</span>' : ''}</div></div><div class="p-row"><div class="p-left"><span class="p-yg">${f.yg}</span><span class="p-unit">${f.xi}</span></div><div class="p-right"><div style="display:flex;flex-direction:column;align-items:flex-end;"><span class="cs-label" style="display:none;font-size:0.6rem;color:#999;">${calcCS(f.tp, n)}</span><span class="p-stem" style="${getS(tT)}">${f.tp}</span></div></div></div><div class="p-row"><div class="p-left"><span class="p-men" style="${getS(r.mk[n].ts)}">${f.me}</span></div><div class="p-right"><div style="display:flex;flex-direction:column;align-items:flex-end;"><span class="cs-label" style="display:none;font-size:0.6rem;color:#999;">${calcCS(f.dp, n)}</span><span class="p-stem" style="${getS(dT)}">${f.dp}</span></div></div></div>`;
                 g.appendChild(w);
             });
             if (document.body.classList.contains('show-cs')) Array.from(document.querySelectorAll('.cs-label')).forEach(l => l.style.display = 'block');
         }
-
-        function shP(n, r) {
-            const f = r.jg[n], pi = ["", "坎一宫", "坤二宫", "震三宫", "巽四宫", "中五宫", "乾六宫", "兑七宫", "艮八宫", "离九宫"][n];
-            document.getElementById('p-t').innerText = pi;
-
-            let h = `<div class="nj-sec"><span class="nj-lbl">【九宫分析】</span><span class="nj-val">${f.sn} + ${f.xi} + ${f.me}</span></div>`;
-
-            // 天干组合 (格局)
-            const combo = f.tp + f.dp;
-            let geju = [];
-            if (['戊庚', '庚戊', '乙辛', '辛乙', '丙壬', '壬丙', '丁癸', '癸丁'].includes(combo)) geju.push("天盘冲格");
-            if (['戊辛', '辛戊', '庚癸', '癸庚', '壬己', '己壬'].includes(combo)) geju.push("地盘冲格");
-            if (['乙辛', '丙庚', '戊庚', '庚戊', '庚壬', '庚癸', '癸壬'].includes(combo)) geju.push("动格/迁徙");
-            if (['乙庚', '庚乙', '丙辛', '辛丙', '丁壬', '壬丁', '戊癸', '癸戊'].includes(combo)) geju.push("合格/羁绊");
-            if (geju.length) h += `<div class="nj-sec"><span class="nj-lbl">【格局提示】</span><span class="nj-val" style="color:#d32f2f">${geju.join('、')}</span></div>`;
-
-            // 综合建议行为
-            let acts = [XW_DATA[f.tp], XW_DATA[f.dp], XW_DATA[f.me], XW_DATA[f.sn]].filter(v => v);
-            if (acts.length) h += `<div class="nj-sec"><span class="nj-lbl">【综合建议行为】</span><span class="nj-val">${[...new Set(acts)].join('、')}</span></div>`;
-
-            // 物象参考
-            let wux = [WX_DATA[f.tp], WX_DATA[f.dp], WX_DATA[f.me]].filter(v => v);
-            if (wux.length) h += `<div class="nj-sec"><span class="nj-lbl">【物象参考】</span><span class="nj-val">${[...new Set(wux)].join('、')}</span></div>`;
-
-            document.getElementById('p-c').innerHTML = h;
-            document.getElementById('p-modal').style.display = 'block';
-        }
-
         function calcCS(g, p) { const s = { '甲': '亥', '乙': '午', '丙': '寅', '丁': '酉', '戊': '寅', '己': '酉', '庚': '巳', '辛': '子', '壬': '申', '癸': '卯' }, d = { '甲': 1, '乙': -1, '丙': 1, '丁': -1, '戊': 1, '己': -1, '庚': 1, '辛': -1, '壬': 1, '癸': -1 }, st = ["长生", "沐浴", "冠带", "临官", "帝旺", "衰", "病", "死", "墓", "绝", "胎", "养"]; if (!s[g]) return ""; const t = { 1: ['子'], 8: ['丑', '寅'], 3: ['卯'], 4: ['辰', '巳'], 9: ['午'], 2: ['未', '申'], 7: ['酉'], 6: ['戌', '亥'], 5: ['未', '申'] }[p]; const si = DI.indexOf(s[g]); const ti = DI.indexOf(t[0]); return st[(d[g] === 1 ? (ti - si + 12) % 12 : (si - ti + 12) % 12)]; }
         function paipan(date) {
             try {
@@ -628,8 +577,8 @@
         function pk() { const v = document.getElementById('dt-pk').value; if (v) { cT = new Date(v); const r = paipan(cT); if (r) rdr(r); } }
         function step(h) { cT.setHours(cT.getHours() + h); syncPK(); }
         function toggleCS() { document.body.classList.toggle('show-cs'); syncPK(); showT('长生状态切换'); }
-        function toggleNJ() { const b = document.getElementById('nj-btn'); const a = b.classList.toggle('nj-on'); document.querySelectorAll('.nj-bd').forEach(i => i.style.display = a ? 'block' : 'none'); showT(a ? '已开启纳吉视野' : '已关闭'); }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function toggleNJ() { const b = document.getElementById('nj-btn'); const a = b.classList.toggle('nj-on'); document.querySelectorAll('.nj-bd').forEach(i => i.style.display = a ? 'block' : 'none'); showT(a ? '已开启吉位视野' : '已关闭'); }
+        function shP(n, r) { document.getElementById('p-t').innerText = ["", "坎一宫", "坤二宫", "震三宫", "巽四宫", "中五宫", "乾六宫", "兑七宫", "艮八宫", "离九宫"][n]; document.getElementById('p-c').innerText = `此处显示 ${n} 宫的详细解析建议...`; document.getElementById('p-modal').style.display = 'block'; }
         function closeM(id) { document.getElementById(id).style.display = 'none'; }
         function showT(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000); }
         function openLib() { document.getElementById('lib-modal').style.display = 'block'; }
