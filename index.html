@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>奇门遁甲 - 智能随身系统</title>
+    <title>奇门遁甲 - 智能随身系统 v2.2</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
@@ -16,7 +16,6 @@
             --accent: #00bfa5;
             --bg: #f5f2ed;
             --white: #ffffff;
-            --zinc-800: #27272a;
         }
 
         body {
@@ -29,20 +28,19 @@
             margin: 0;
             -webkit-tap-highlight-color: transparent;
             min-height: 100vh;
-            color: var(--zinc-800);
+            color: #333;
         }
 
-        /* App Header */
         .app-header {
             background: var(--white);
             width: 100%;
-            padding: 18px 0 12px;
+            padding: 18px 0 10px;
             text-align: center;
             border-bottom: 1px solid #e5e0da;
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
         }
 
         .app-header h1 {
@@ -51,6 +49,16 @@
             letter-spacing: 6px;
             font-family: 'Ma Shan Zheng', cursive;
             color: #222;
+        }
+
+        .v-tag {
+            font-size: 0.6rem;
+            color: #ccc;
+            vertical-align: middle;
+            margin-left: -10px;
+            font-family: sans-serif;
+            font-weight: normal;
+            letter-spacing: 0;
         }
 
         .safe-area {
@@ -169,6 +177,7 @@
             padding: 10px;
             box-sizing: border-box;
             position: relative;
+            cursor: pointer;
         }
 
         .p-row {
@@ -185,7 +194,7 @@
 
         .p-men {
             font-weight: 900;
-            font-size: 1.2rem;
+            font-size: 1.25rem;
         }
 
         .p-stem {
@@ -212,9 +221,9 @@
             font-size: 0.65rem;
             color: #999;
             display: none;
+            margin-bottom: 2px;
         }
 
-        /* Nav Tab - Center Fixed UI */
         .nav-tab {
             position: fixed;
             bottom: 0;
@@ -222,10 +231,10 @@
             transform: translateX(-50%);
             width: 100%;
             max-width: 500px;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
             display: flex;
             padding: 12px 0 34px;
             z-index: 2000;
@@ -240,7 +249,7 @@
             align-items: center;
             color: #999;
             cursor: pointer;
-            transition: 0.2s ease;
+            transition: 0.2s;
         }
 
         .nav-btn.active {
@@ -259,7 +268,6 @@
 
         .nav-text {
             font-size: 0.75rem;
-            font-weight: 500;
         }
 
         .btn-m {
@@ -271,19 +279,16 @@
             background: var(--accent);
             color: white;
             cursor: pointer;
-        }
-
-        .btn-m:active {
-            transform: scale(0.97);
+            box-shadow: 0 4px 10px rgba(0, 191, 165, 0.2);
         }
 
         .modal {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.5);
             z-index: 5000;
-            backdrop-filter: blur(3px);
+            backdrop-filter: blur(4px);
         }
 
         .modal-body {
@@ -299,7 +304,7 @@
             max-height: 80vh;
             overflow-y: auto;
             box-sizing: border-box;
-            box-shadow: 0 -20px 50px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
         }
 
         .nj-bd {
@@ -307,17 +312,34 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            border: 2px solid var(--accent);
+            border: 2.5px solid var(--accent);
             background: white;
             border-radius: 10px;
-            padding: 5px 12px;
+            padding: 6px 12px;
             color: var(--accent);
             font-weight: bold;
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             display: none;
             z-index: 10;
             pointer-events: none;
-            box-shadow: 0 4px 15px rgba(0, 191, 165, 0.3);
+            box-shadow: 0 6px 15px rgba(0, 191, 165, 0.25);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                box-shadow: 0 0 0 0 rgba(0, 191, 165, 0.4);
+            }
+
+            70% {
+                transform: translate(-50%, -50%) scale(1.05);
+                box-shadow: 0 0 0 10px rgba(0, 191, 165, 0);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
         }
 
         #toast {
@@ -325,69 +347,84 @@
             bottom: 120px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(30, 30, 30, 0.9);
             color: #fff;
             padding: 12px 28px;
             border-radius: 50px;
             display: none;
             z-index: 10000;
             font-size: 0.9rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
         .case-item {
-            padding: 16px;
+            padding: 18px;
             border-bottom: 1px solid #f9f6f2;
             cursor: pointer;
+            transition: 0.2s;
         }
 
-        .case-item:active {
-            background: #fefcf9;
+        .case-item:hover {
+            background: #fdfaf5;
         }
 
         .case-n {
             font-weight: bold;
             color: #222;
-            font-size: 1.05rem;
+            font-size: 1.1rem;
         }
 
         .case-t {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: #999;
-            margin-top: 5px;
+            margin-top: 6px;
         }
 
-        #drop-box {
-            border: 2px dashed #ccc;
-            border-radius: 20px;
-            padding: 45px 20px;
-            text-align: center;
-            color: #888;
-            margin-bottom: 25px;
-            transition: 0.3s;
+        #note-card {
+            background: white;
+            border-radius: 16px;
+            padding: 18px;
+            margin-top: 16px;
+            border: 1px solid #e5e0da;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            display: none;
         }
 
-        #drop-box.hover {
-            border-color: var(--accent);
-            background: #00bfa508;
-            color: var(--accent);
+        .nj-sec {
+            margin-bottom: 12px;
+            border-bottom: 1px dashed #eee;
+            padding-bottom: 8px;
+        }
+
+        .nj-lbl {
+            color: #b8905b;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+        }
+
+        .nj-val {
+            color: #444;
+            line-height: 1.5;
+            font-size: 1rem;
         }
     </style>
 </head>
 
 <body>
     <div class="app-header">
-        <h1>奇门遁甲 <span style="font-size:0.6rem; font-weight:normal; opacity:0.3;">v2.1</span></h1>
+        <h1>奇门遁甲<span class="v-tag">v2.2 Stable</span></h1>
     </div>
     <div class="safe-area">
         <div class="matter-box"><input type="text" id="matter" class="matter-input" placeholder="输入预测事项..."></div>
         <div class="chart-card">
             <div class="info-row"><span class="label">日期</span><span class="value"
-                    style="display:flex;align-items:center;">
-                    <input type="datetime-local" id="dt-pk"
-                        style="border:none;outline:none;font-size:1.1rem;color:#c02;font-weight:bold;background:transparent;">
-                    <button onclick="pk()"
-                        style="background:var(--accent);color:#fff;border:none;border-radius:8px;padding:6px 14px;margin-left:8px;font-weight:bold;">起局</button>
-                </span></div>
+                    style="display:flex;align-items:center;"><input type="datetime-local" id="dt-pk"
+                        style="border:none;outline:none;font-size:1.1rem;color:#c02;font-weight:bold;background:transparent;"><button
+                        onclick="pk()"
+                        style="background:var(--accent);color:#fff;border:none;border-radius:8px;padding:6px 14px;margin-left:8px;font-weight:bold;">排盘</button></span>
+            </div>
             <div class="bazi-row">
                 <div class="bazi-item">
                     <div class="bazi-l">年柱</div>
@@ -414,19 +451,16 @@
             <div class="info-row"><span class="label">空亡马星</span><span class="value red" id="xkm-v">--</span></div>
         </div>
         <div class="grid-container" id="grid"></div>
-        <div id="note-card"
-            style="display:none;background:white;padding:18px;border-radius:12px;margin-top:16px;border:1px solid #eee;">
-            <div style="font-weight:bold;color:var(--primary);margin-bottom:8px;">档案记录</div>
-            <div id="note-body" style="font-size:0.95rem; line-height:1.6; color:#666; white-space:pre-wrap;"></div>
+        <div id="note-card">
+            <div
+                style="font-weight:bold;color:var(--primary);margin-bottom:8px;border-bottom:1px solid #f5f2ed;padding-bottom:5px;">
+                档案笔记</div>
+            <div id="note-body" style="font-size:0.95rem; line-height:1.6; color:#555; white-space:pre-wrap;"></div>
         </div>
-        <div class="action-btns" style="display:flex;gap:12px;margin-top:20px;">
-            <button class="btn-m" onclick="step(-2)">◀ 上一局</button>
-            <button id="cs-toggle-btn" class="btn-m" style="background:#8b7355;color:white"
-                onclick="toggleCS()">显示长生</button>
-            <button class="btn-m" onclick="step(2)">下一局 ▶</button>
-        </div>
+        <div class="action-btns" style="display:flex;gap:12px;margin-top:20px;"><button class="btn-m"
+                onclick="step(-2)">◀ 上一局</button><button class="btn-m" style="background:#8b7355"
+                onclick="toggleCS()">显示长生</button><button class="btn-m" onclick="step(2)">下一局 ▶</button></div>
     </div>
-
     <div class="nav-tab">
         <div class="nav-btn active" onclick="goNow()"><span class="nav-icon">🕒</span><span class="nav-text">现在</span>
         </div>
@@ -435,173 +469,109 @@
                 class="nav-text">纳吉</span></div>
         <div class="nav-btn" onclick="share()"><span class="nav-icon">🖼️</span><span class="nav-text">分享</span></div>
     </div>
-
     <div id="lib-modal" class="modal">
-        <div class="modal-body">
-            <span style="position:absolute;top:15px;right:20px;font-size:1.8rem;color:#ccc;cursor:pointer;"
+        <div class="modal-body"><span
+                style="position:absolute;top:15px;right:20px;font-size:1.5rem;color:#ccc;cursor:pointer;"
                 onclick="closeM('lib-modal')">&times;</span>
-            <h3 style="color:var(--primary);margin:0 0 24px;text-align:center;">档案库接入</h3>
-            <div id="drop-box">📂 这里支持点击上传或拖拽 cases.db<br><br><small style="opacity:0.6">IndexedDB 自动维持离线持久化</small>
-            </div>
+            <h3 style="color:var(--primary);margin:0 0 20px;text-align:center;">档案库接入</h3>
+            <div id="drop-box"
+                style="border:2.5px dashed #ccc;border-radius:20px;padding:45px 20px;text-align:center;color:#999;margin-bottom:20px;cursor:pointer;background:#fafafa;">
+                📂 点击或拖拽 cases.db 恢复数据</div>
             <div id="c-list"></div>
         </div>
     </div>
+    <div id="p-modal" class="modal">
+        <div class="modal-body"><span
+                style="position:absolute;top:15px;right:20px;font-size:1.5rem;color:#ccc;cursor:pointer;"
+                onclick="closeM('p-modal')">&times;</span>
+            <h3 id="p-t" style="color:var(--primary);margin:0 0 15px;">宫位详析</h3>
+            <div id="p-c"></div>
+        </div>
+    </div>
     <div id="toast"></div>
-
     <script>
         const TI = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'], DI = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'], SQ = ['戊', '己', '庚', '辛', '壬', '癸', '丁', '丙', '乙'], ZO = [1, 8, 3, 4, 9, 2, 7, 6], BO = { 1: '休门', 2: '死门', 3: '伤门', 4: '杜门', 6: '开门', 7: '惊门', 8: '生门', 9: '景门' }, XO = { 1: '天蓬', 2: '天芮', 3: '天冲', 4: '天辅', 5: '天禽', 6: '天心', 7: '天柱', 8: '天任', 9: '天英' }, BS = ['值符', '螣蛇', '太阴', '六合', '白虎', '玄武', '九地', '九天'];
+        const WX_DATA = { "甲": "龙、高贵物品", "乙": "花草、艺术品、管道", "丙": "镜子、红火、印章", "丁": "灯火、利刃、香火", "戊": "钱币、陶瓷、理财", "己": "坐垫、垃圾、旧绳", "庚": "大刀、器械、硬石", "辛": "珠宝、颗粒、密钥", "壬": "水管、江河、流通", "癸": "清茶、酒水、厕浴", "休门": "水、贵人", "生门": "财库、生机", "死门": "墓碑、死物", "景门": "文书、电器" };
+        const XW_DATA = { "甲": "高级装扮", "乙": "手写日记、理草", "丙": "点亮灯光、照镜", "丁": "吸管喝水、诵经", "戊": "整理钱包、吃肉", "己": "小零食、静坐", "庚": "抄经阅读、决断", "辛": "忏悔改变、吃辣", "壬": "跑步喝水、清洗", "癸": "洗脸喝茶、行走", "值符": "穿戴大方", "太阴": "素净典雅", "休门": "放松沐浴", "生门": "求财规划", "开门": "正式工作", "景门": "点香薰灯" };
+        const GUA_MAP = { "6,6": "乾为天", "6,2": "天地否", "6,3": "天雷无妄", "6,4": "天风姤", "6,1": "天水讼", "6,9": "天火同人", "6,8": "天山遁", "6,7": "天泽履", "2,6": "地天泰", "2,2": "坤为地", "2,3": "地雷复", "2,4": "地风升", "2,1": "地水师", "2,9": "地火明夷", "2,8": "地山谦", "2,7": "地泽临", "3,6": "雷天大壮", "3,2": "雷地豫", "3,3": "震为雷", "3,4": "雷风恒", "3,1": "雷水解", "3,9": "雷火丰", "3,8": "雷山小过", "3,7": "雷泽归妹", "4,6": "风天小畜", "4,2": "风地观", "4,3": "风雷益", "4,4": "巽为风", "4,1": "风水涣", "4,9": "风火家人", "4,8": "风山渐", "4,7": "风泽中孚", "1,6": "水天需", "1,2": "水地比", "1,3": "水雷屯", "1,4": "水风井", "1,1": "坎为水", "1,9": "水火既济", "1,8": "水山蹇", "1,7": "水泽节", "9,6": "火天大有", "9,2": "火地晋", "9,3": "火雷噬嗑", "9,4": "火风鼎", "9,1": "火水未济", "9,9": "离为火", "9,8": "火山旅", "9,7": "火泽睽", "8,6": "山天大畜", "8,2": "山地剥", "8,3": "山雷颐", "8,4": "山风蛊", "8,1": "山水蒙", "8,9": "山火贲", "8,8": "艮为山", "8,7": "山泽损", "7,6": "泽天夬", "7,2": "泽地萃", "7,3": "泽雷随", "7,4": "泽风大过", "7,1": "泽水困", "7,9": "泽火革", "7,8": "泽山咸", "7,7": "兑为泽" };
+        const GO = { '休门': 1, '死门': 2, '伤门': 3, '杜门': 4, '开门': 6, '惊门': 7, '生门': 8, '景门': 9 };
         let cT = new Date(), sqlDB = null, showCS = false;
 
         function syncPK() { document.getElementById('dt-pk').value = new Date(cT.getTime() - cT.getTimezoneOffset() * 60000).toISOString().substring(0, 16); rdr(paipan(cT)); }
         function goNow() { cT = new Date(); syncPK(); }
         function pk() { const v = document.getElementById('dt-pk').value; if (v) { cT = new Date(v); rdr(paipan(cT)); } }
         function step(h) { cT.setHours(cT.getHours() + h); syncPK(); }
-
-        function toggleCS() {
-            showCS = !showCS;
-            document.getElementById('cs-toggle-btn').innerText = showCS ? '隐藏长生' : '显示长生';
-            Array.from(document.querySelectorAll('.cs-label')).forEach(el => el.style.display = showCS ? 'block' : 'none');
-            showT(showCS ? '开启长生显示' : '关闭长生显示');
-        }
-
-        function toggleNJ() {
-            const b = document.getElementById('nj-btn');
-            const a = b.classList.toggle('nj-on');
-            document.querySelectorAll('.nj-bd').forEach(i => i.style.display = a ? 'block' : 'none');
-            showT(a ? '已开启纳吉视野' : '已关闭');
-        }
-
+        function toggleCS() { showCS = !showCS; Array.from(document.querySelectorAll('.cs-label')).forEach(el => el.style.display = showCS ? 'block' : 'none'); }
+        function toggleNJ() { const b = document.getElementById('nj-btn'); const a = b.classList.toggle('nj-on'); document.querySelectorAll('.nj-bd').forEach(i => i.style.display = a ? 'block' : 'none'); showT(a ? '已开启纳吉视野' : '已关闭'); }
         function showT(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000); }
-        function openLib() { document.getElementById('lib-modal').style.display = 'block'; }
         function closeM(id) { document.getElementById(id).style.display = 'none'; }
-
         function getXS(gz) { const gi = TI.indexOf(gz[0]), zi = DI.indexOf(gz[1]); return "甲" + DI[(zi - gi + 12) % 12]; }
-        function calcCS(g, p) {
-            const s = { '甲': '亥', '乙': '午', '丙': '寅', '丁': '酉', '戊': '寅', '己': '酉', '庚': '巳', '辛': '子', '壬': '申', '癸': '卯' },
-                d = { '甲': 1, '乙': -1, '丙': 1, '丁': -1, '戊': 1, '己': -1, '庚': 1, '辛': -1, '壬': 1, '癸': -1 },
-                st = ["长生", "沐浴", "冠带", "临官", "帝旺", "衰", "病", "死", "墓", "绝", "胎", "养"];
-            if (!s[g]) return "";
-            const t = { 1: '子', 2: '申', 3: '卯', 4: '巳', 6: '戌', 7: '酉', 8: '寅', 9: '午', 5: '申' }[p];
-            const si = DI.indexOf(s[g]), ti = DI.indexOf(t);
-            return st[(d[g] === 1 ? (ti - si + 12) % 12 : (si - ti + 12) % 12)];
-        }
+        function calcCS(g, p) { const s = { '甲': '亥', '乙': '午', '丙': '寅', '丁': '酉', '戊': '寅', '己': '酉', '庚': '巳', '辛': '子', '壬': '申', '癸': '卯' }, d = { '甲': 1, '乙': -1, '丙': 1, '丁': -1, '戊': 1, '己': -1, '庚': 1, '辛': -1, '壬': 1, '癸': -1 }, st = ["长生", "沐浴", "冠带", "临官", "帝旺", "衰", "病", "死", "墓", "绝", "胎", "养"]; if (!s[g]) return ""; const t = { 1: '子', 8: '寅', 3: '卯', 4: '巳', 9: '午', 2: '申', 7: '酉', 6: '亥', 5: '申' }[p]; const si = DI.indexOf(s[g]), ti = DI.indexOf(t); return st[(d[g] === 1 ? (ti - si + 12) % 12 : (si - ti + 12) % 12)]; }
 
         function paipan(date) {
-            try {
-                const sol = window.Solar.fromDate(date), lun = sol.getLunar(), hg = lun.getTimeInGanZhi(), xs = getXS(hg), dg = { '甲子': '戊', '甲戌': '己', '甲申': '庚', '甲午': '辛', '甲辰': '壬', '甲寅': '癸' }[xs], jn = lun.getPrevJieQi().getName(), ji = ['冬至', '小寒', '大寒', '立春', '雨水', '惊蛰', '春分', '清明', '谷雨', '立夏', '小满', '芒种', '夏至', '小暑', '大暑', '立秋', '处暑', '白露', '秋分', '寒露', '霜降', '立冬', '小雪', '大雪'].indexOf(jn), dayO = (10 + Math.floor((new Date(sol.getYear(), sol.getMonth() - 1, sol.getDay()) - new Date(1900, 0, 1)) / 86400000)) % 60, sy = Math.floor((dayO % 15) / 5), ju = [[1, 7, 4], [2, 8, 5], [3, 9, 6], [8, 5, 2], [9, 6, 3], [1, 7, 4], [3, 9, 6], [4, 1, 7], [5, 2, 8], [4, 1, 7], [5, 2, 8], [6, 3, 9], [9, 3, 6], [8, 2, 5], [7, 1, 4], [2, 5, 8], [1, 4, 7], [9, 3, 6], [7, 1, 4], [6, 9, 3], [5, 8, 2], [6, 9, 3], [5, 8, 2], [4, 7, 1]][ji][sy], dp = {};
-                [1, 2, 3, 4, 5, 6, 7, 8, 9].forEach((g, i) => { dp[ji < 12 ? [1, 2, 3, 4, 5, 6, 7, 8, 9][([1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(ju) + i) % 9] : [1, 2, 3, 4, 5, 6, 7, 8, 9][([1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(ju) - i + 9) % 9]] = SQ[i]; });
-                const xg = Object.keys(dp).find(k => dp[k] === dg), xa = xg == 5 ? 2 : parseInt(xg), sg = hg[0] === '甲' ? dg : hg[0], sgG = Object.keys(dp).find(k => dp[k] === sg), sa = sgG == 5 ? 2 : parseInt(sgG), st = (DI.indexOf(hg[1]) - DI.indexOf(xs.substring(1)) + 12) % 12; let cg = parseInt(xg); for (let i = 0; i < st; i++)cg = ji < 12 ? (cg == 9 ? 1 : cg + 1) : (cg == 1 ? 9 : cg - 1);
-                const zt = cg == 5 ? 2 : cg, get = (g) => ZO.indexOf(g == 5 ? 2 : g), xp = get(xa), sp = get(sa), zp = get(zt), jg = {}, zs = BO[xg] || '死门';
-                for (let n = 1; n <= 9; n++) { if (n == 5) { jg[n] = { dp: dp[5], yg: '' }; continue; } const p = ZO.indexOf(n), xiG = ZO[(p - (sp - xp + 8) % 8 + 8) % 8], meG = ZO[(p - (zp - xp + 8) % 8 + 8) % 8]; jg[n] = { dp: dp[n], tp: dp[xiG] || dp[5], xi: XO[xiG], me: BO[meG] || '死门', sn: BS[ji < 12 ? (p - sp + 8) % 8 : (sp - p + 8) % 8] }; }
-                const ym = {}; for (let i = 0; i < 9; i++)ym[ji < 12 ? (zt + i - 1) % 9 + 1 : (zt - i + 9 - 1) % 9 + 1] = SQ[(SQ.indexOf(sg) + i) % 9]; for (let n = 1; n <= 9; n++)jg[n].yg = ym[n];
-                const mk = {}; for (let n = 1; n <= 9; n++) { if (n == 5) continue; const m = { ts: [], gt: {} }; if (['伤门', '杜门'].includes(jg[n].me) && [2, 8].includes(n)) m.ts.push('门迫'); if (['开门', '惊门'].includes(jg[n].me) && [3, 4].includes(n)) m.ts.push('门迫');[jg[n].tp, jg[n].dp, jg[n].yg].forEach(gan => { const t = []; if ({ '己': [2], '戊': [3], '壬': [4], '癸': [4], '庚': [8], '辛': [9] }[gan]?.includes(n)) t.push('击刑'); if ({ '甲': [2], '癸': [2], '乙': [6], '丙': [6], '戊': [6], '丁': [8], '己': [8], '庚': [8], '辛': [4], '壬': [4] }[gan]?.includes(n)) t.push('入墓'); m.gt[gan] = t; }); mk[n] = m; }
-                return { lu: lun, jg, zf: XO[xa], zs, xs, du: ji < 12 ? '阳遁' : '阴遁', ju, sy: ['上元', '中元', '下元'][sy], jq: jn, xk: lun.getEightChar().getDayXunKong(), ym: { '申': 8, '子': 8, '辰': 8, '寅': 2, '午': 2, '戌': 2, '巳': 6, '酉': 6, '丑': 6, '亥': 4, '卯': 4, '未': 4 }[hg[1]], mk };
-            } catch (e) { return null; }
+            const sol = window.Solar.fromDate(date), lun = sol.getLunar(), hg = lun.getTimeInGanZhi(), dg_map = { '甲子': '戊', '甲戌': '己', '甲申': '庚', '甲午': '辛', '甲辰': '壬', '甲寅': '癸' }, xs = getXS(hg), dg = dg_map[xs], jn = lun.getPrevJieQi().getName(), ji = ['冬至', '小寒', '大寒', '立春', '雨水', '惊蛰', '春分', '清明', '谷雨', '立夏', '小满', '芒种', '夏至', '小暑', '大暑', '立秋', '处暑', '白露', '秋分', '寒露', '霜降', '立冬', '小雪', '大雪'].indexOf(jn), dayO = (10 + Math.floor((new Date(sol.getYear(), sol.getMonth() - 1, sol.getDay()) - new Date(1900, 0, 1)) / 86400000)) % 60, sy = Math.floor((dayO % 15) / 5), ju = [[1, 7, 4], [2, 8, 5], [3, 9, 6], [8, 5, 2], [9, 6, 3], [1, 7, 4], [3, 9, 6], [4, 1, 7], [5, 2, 8], [4, 1, 7], [5, 2, 8], [6, 3, 9], [9, 3, 6], [8, 2, 5], [7, 1, 4], [2, 5, 8], [1, 4, 7], [9, 3, 6], [7, 1, 4], [6, 9, 3], [5, 8, 2], [6, 9, 3], [5, 8, 2], [4, 7, 1]][ji][sy], dp = {};
+            [1, 2, 3, 4, 5, 6, 7, 8, 9].forEach((g, i) => { dp[ji < 12 ? [1, 2, 3, 4, 5, 6, 7, 8, 9][([1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(ju) + i) % 9] : [1, 2, 3, 4, 5, 6, 7, 8, 9][([1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(ju) - i + 9) % 9]] = SQ[i]; });
+            const xg = Object.keys(dp).find(k => dp[k] === dg), xa = xg == 5 ? 2 : parseInt(xg), sg = hg[0] === '甲' ? dg : hg[0], sgG = Object.keys(dp).find(k => dp[k] === sg), sa = sgG == 5 ? 2 : parseInt(sgG), st = (DI.indexOf(hg[1]) - DI.indexOf(xs.substring(1)) + 12) % 12; let cg = parseInt(xg); for (let i = 0; i < st; i++)cg = ji < 12 ? (cg == 9 ? 1 : cg + 1) : (cg == 1 ? 9 : cg - 1);
+            const zt = cg == 5 ? 2 : cg, zp = ZO.indexOf(zt), xp = ZO.indexOf(xa), sp = ZO.indexOf(sa), jg = {}, zs = BO[xg] || '死门';
+            for (let n = 1; n <= 9; n++) { if (n == 5) { jg[n] = { dp: dp[5], yg: '' }; continue; } const p = ZO.indexOf(n), xiG = ZO[(p - (sp - xp + 8) % 8 + 8) % 8], meG = ZO[(p - (zp - xp + 8) % 8 + 8) % 8]; jg[n] = { dp: dp[n], tp: dp[xiG] || dp[5], xi: XO[xiG], me: BO[meG] || '死门', sn: BS[ji < 12 ? (p - sp + 8) % 8 : (sp - p + 8) % 8] }; }
+            const ym = {}; for (let i = 0; i < 9; i++)ym[ji < 12 ? (zt + i - 1) % 9 + 1 : (zt - i + 9 - 1) % 9 + 1] = SQ[(SQ.indexOf(sg) + i) % 9]; for (let n = 1; n <= 9; n++)jg[n].yg = ym[n];
+            const mk = {}; for (let n = 1; n <= 9; n++) { if (n == 5) continue; const m = { ts: [], gt: {} }; if (['伤门', '杜门'].includes(jg[n].me) && [2, 8].includes(n)) m.ts.push('门迫'); if (['开门', '惊门'].includes(jg[n].me) && [3, 4].includes(n)) m.ts.push('门迫');[jg[n].tp, jg[n].dp, jg[n].yg].forEach(gan => { const t = []; if ({ '己': [2], '戊': [3], '壬': [4], '癸': [4], '庚': [8], '辛': [9] }[gan]?.includes(n)) t.push('击刑'); if ({ '甲': [2], '癸': [2], '乙': [6], '丙': [6], '戊': [6], '丁': [8], '己': [8], '庚': [8], '辛': [4], '壬': [4] }[gan]?.includes(n)) t.push('入墓'); m.gt[gan] = t; }); mk[n] = m; }
+            return { lu: lun, jg, zf: XO[xa], zs, xs, du: ji < 12 ? '阳遁' : '阴遁', ju, sy: ['上元', '中元', '下元'][sy], jq: jn, xk: lun.getEightChar().getDayXunKong(), ym: { '申': 8, '子': 8, '辰': 8, '寅': 2, '午': 2, '戌': 2, '巳': 6, '酉': 6, '丑': 6, '亥': 4, '卯': 4, '未': 4 }[hg[1]], mk };
+        }
+
+        function shP(n, r) {
+            const f = r.jg[n], pi = ["", "坎一宫", "坤2宫", "震三宫", "巽四宫", "中五宫", "乾六宫", "兑七宫", "艮八宫", "离九宫"][n];
+            document.getElementById('p-t').innerText = pi;
+            let h = `<div class="nj-sec"><span class="nj-lbl">【九宫分析】</span><span class="nj-val">${f.sn} + ${f.xi} + ${f.me}</span></div>`;
+            if (GO[f.me]) { const gn = GO[f.me]; const gn_name = GUA_MAP[`${gn},${n}`] || `卦位(${gn},${n})`; h += `<div class="nj-sec"><span class="nj-lbl">【门宫卦】</span><span class="nj-val">${gn_name}</span></div>`; }
+
+            // 格局提示
+            const combo = f.tp + f.dp;
+            let geju = [];
+            if (['戊庚', '庚戊', '乙辛', '辛乙', '丙壬', '壬丙', '丁癸', '癸丁'].includes(combo)) geju.push("天盘冲格");
+            if (['戊辛', '辛戊', '庚癸', '癸庚', '壬己', '己壬'].includes(combo)) geju.push("地盘冲格");
+            if (['乙辛', '丙庚', '戊庚', '庚戊', '庚壬', '庚癸', '癸壬'].includes(combo)) geju.push("动格/迁徙");
+            if (['乙庚', '庚乙', '丙辛', '辛丙', '丁壬', '壬丁', '戊癸', '癸戊'].includes(combo)) geju.push("合格/羁绊");
+            if (geju.length) h += `<div class="nj-sec"><span class="nj-lbl">【格局提示】</span><span class="nj-val" style="color:#d32f2f">${geju.join('、')}</span></div>`;
+
+            let acts = [XW_DATA[f.tp], XW_DATA[f.dp], XW_DATA[f.me], XW_DATA[f.sn]].filter(v => v);
+            if (acts.length) h += `<div class="nj-sec"><span class="nj-lbl">【行为建议】</span><span class="nj-val">${[...new Set(acts)].join('、')}</span></div>`;
+            let wux = [WX_DATA[f.tp], WX_DATA[f.dp], WX_DATA[f.me]].filter(v => v);
+            if (wux.length) h += `<div class="nj-sec"><span class="nj-lbl">【物象参考】</span><span class="nj-val">${[...new Set(wux)].join('、')}</span></div>`;
+            document.getElementById('p-c').innerHTML = h; document.getElementById('p-modal').style.display = 'block';
         }
 
         function rdr(r) {
             if (!r) return;
             document.getElementById('jq-v').innerText = r.jq;
             document.getElementById('js-v').innerText = r.du + r.ju + '局(' + r.sy + ')';
-            document.getElementById('xs-v').innerText = r.xs;
-            document.getElementById('zfzs-v').innerText = `符：${r.zf} / 使：${r.zs}`;
+            document.getElementById('xs-v').innerText = r.xs; document.getElementById('zfzs-v').innerText = `符：${r.zf} / 使：${r.zs}`;
             document.getElementById('xkm-v').innerText = `空：${r.xk} 马：${["", "坎1", "坤2", "震3", "巽4", "中5", "乾6", "兑7", "艮8", "离9"][r.ym]}`;
             const bzv = [r.lu.getYearInGanZhiExact(), r.lu.getMonthInGanZhiExact(), r.lu.getDayInGanZhiExact(), r.lu.getTimeInGanZhi()];
             ['bz-y', 'bz-m', 'bz-d', 'bz-t'].forEach((id, i) => document.getElementById(id).innerText = bzv[i]);
             const g = document.getElementById('grid'); g.innerHTML = '';
             [4, 9, 2, 3, 5, 7, 8, 1, 6].forEach(n => {
-                const f = r.jg[n], w = document.createElement('div'); w.className = 'palace';
+                const f = r.jg[n], w = document.createElement('div'); w.className = 'palace'; w.onclick = () => shP(n, r);
                 if (n === 5) { w.innerHTML = `<div style="height:100%;display:flex;justify-content:center;align-items:center;"><span class="p-stem" style="color:#ddd">${f.dp}</span></div>`; g.appendChild(w); return; }
-                const getS = t => t?.includes('击刑') ? 'color:#8b00cc;' : t?.includes('门迫') ? 'color:#cc0000;' : '';
-
-                // --- Essential Na Ji Logic ---
-                let njH = ""; const njR = { 1: ['休门'], 2: ['生门'], 6: ['开门'], 8: ['生门'], 9: ['景门'] };
-                if (njR[n]?.includes(f.me) && !r.mk[n].ts.includes('门迫') && !Object.values(r.mk[n].gt).flat().includes('击刑') && f.sn !== '白虎') {
+                const getS = t => t?.includes('击刑') ? 'color:#8b00cc;' : t?.includes('门迫') ? 'color:#cc0000;' : t?.includes('入墓') ? 'color:#cc8800' : '';
+                let njH = ""; const njR = { 1: ['休门'], 2: ['生门'], 6: ['开门'], 7: ['惊门'], 8: ['生门'], 9: ['景门'] };
+                if (njR[n]?.includes(f.me) && !r.mk[n].ts.includes('门迫') && !Object.values(r.mk[n].gt).flat().includes('击刑') && f.sn !== '白虎' && !r.xk.includes(DI[["", 0, 7, 2, 4, 0, 10, 8, 1, 6][n]])) {
                     njH = `<div class="nj-bd" style="display:${document.getElementById('nj-btn').classList.contains('nj-on') ? 'block' : 'none'}">纳吉</div>`;
                 }
-
-                w.innerHTML = `${njH}
-                    <div class="p-row">
-                        <span class="p-unit">${r.xk.includes(DI[["", 0, 7, 2, 4, 0, 10, 8, 1, 6][n]]) ? '<span class="xk-o">○</span>' : ''}${f.sn}</span>
-                        <span>${n === r.ym ? '🐎' : ''}</span>
-                    </div>
-                    <div class="p-row">
-                        <div><span class="p-yg">${f.yg}</span><span class="p-unit">${f.xi}</span></div>
-                        <div style="text-align:right">
-                            <span class="cs-label" style="display:${showCS ? 'block' : 'none'}">${calcCS(f.tp, n)}</span>
-                            <span class="p-stem">${f.tp}</span>
-                        </div>
-                    </div>
-                    <div class="p-row">
-                        <span class="p-men" style="${getS(r.mk[n].ts)}">${f.me}</span>
-                        <div style="text-align:right">
-                            <span class="cs-label" style="display:${showCS ? 'block' : 'none'}">${calcCS(f.dp, n)}</span>
-                            <span class="p-stem">${f.dp}</span>
-                        </div>
-                    </div>`;
+                w.innerHTML = `${njH}<div class="p-row"><span class="p-unit">${r.xk.includes(DI[["", 0, 7, 2, 4, 0, 10, 8, 1, 6][n]]) ? '<span class="xk-o">○</span>' : ''}${f.sn}</span><span>${n === r.ym ? '🐎' : ''}</span></div><div class="p-row"><div><span class="p-yg">${f.yg}</span><span class="p-unit">${f.xi}</span></div><div style="text-align:right"><span class="cs-label" style="display:${showCS ? 'block' : 'none'}">${calcCS(f.tp, n)}</span><span class="p-stem" style="${getS(r.mk[n].gt[f.tp])}">${f.tp}</span></div></div><div class="p-row"><span class="p-men" style="${getS(r.mk[n].ts)}">${f.me}</span><div style="text-align:right"><span class="cs-label" style="display:${showCS ? 'block' : 'none'}">${calcCS(f.dp, n)}</span><span class="p-stem" style="${getS(r.mk[n].gt[f.dp])}">${f.dp}</span></div></div>`;
                 g.appendChild(w);
             });
         }
 
-        const drop = document.getElementById('drop-box');
-        drop.onclick = () => { const i = document.createElement('input'); i.type = 'file'; i.onchange = e => handleF(e.target.files[0]); i.click(); };
-        drop.ondragover = e => { e.preventDefault(); drop.classList.add('hover'); };
-        drop.ondragleave = () => drop.classList.remove('hover');
-        drop.ondrop = e => { e.preventDefault(); drop.classList.remove('hover'); handleF(e.dataTransfer.files[0]); };
-
-        function handleF(file) {
-            if (!file) return;
-            const r = new FileReader();
-            r.onload = e => {
-                const buf = e.target.result;
-                const request = indexedDB.open('QimenDBStore', 1);
-                request.onupgradeneeded = ev => ev.target.result.createObjectStore('dbFile');
-                request.onsuccess = ev => {
-                    const db = ev.target.result;
-                    const tx = db.transaction('dbFile', 'readwrite');
-                    tx.objectStore('dbFile').put(buf, 'current');
-                    initSQL(buf);
-                };
-            };
-            r.readAsArrayBuffer(file);
-            showT('正在接管档案库...');
-        }
-
-        async function initSQL(buffer) {
-            const SQL = await initSqlJs({ locateFile: f => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/${f}` });
-            sqlDB = new SQL.Database(new Uint8Array(buffer));
-            const res = sqlDB.exec("SELECT name, chart_time, notes FROM cases ORDER BY chart_time DESC");
-            if (res.length > 0) {
-                document.getElementById('c-list').innerHTML = res[0].values.map(v => `
-                    <div class="case-item" onclick="loadC('${v[0] || ""}' ,'${v[1]}','${v[2] || ""}')">
-                        <div class="case-n">${v[0] || '未定事项'}</div>
-                        <div class="case-t">${v[1]}</div>
-                    </div>`).join('');
-            }
-        }
-
-        function loadC(m, dt, n) {
-            document.getElementById('matter').value = m;
-            document.getElementById('dt-pk').value = dt.replace(' ', 'T');
-            document.getElementById('note-body').innerText = n || '无笔记记录';
-            document.getElementById('note-card').style.display = 'block';
-            pk(); closeM('lib-modal');
-        }
-
+        async function saveDB(arrayBuffer) { const db = await indexedDB.open('QimenDBStore', 1); db.onupgradeneeded = e => e.target.result.createObjectStore('dbFile'); db.onsuccess = e => { const d = e.target.result; const tx = d.transaction('dbFile', 'readwrite'); tx.objectStore('dbFile').put(arrayBuffer, 'current'); }; }
+        async function loadSavedDB() { const req = indexedDB.open('QimenDBStore', 1); req.onupgradeneeded = e => e.target.result.createObjectStore('dbFile'); req.onsuccess = e => { const d = e.target.result; const tx = d.transaction('dbFile', 'readonly'); tx.objectStore('dbFile').get('current').onsuccess = event => { if (event.target.result) initSQL(event.target.result); }; }; }
+        async function initSQL(buffer) { const SQL = await initSqlJs({ locateFile: f => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/${f}` }); sqlDB = new SQL.Database(new Uint8Array(buffer)); const res = sqlDB.exec("SELECT name, chart_time, notes FROM cases ORDER BY chart_time DESC"); if (res.length > 0) { document.getElementById('c-list').innerHTML = res[0].values.map(v => `<div class="case-item" onclick="loadC('${v[0] || ""}' ,'${v[1]}','${v[2] || ""}')"><div class="case-n">${v[0] || '未定事项'}</div><div class="case-t">${v[1]}</div></div>`).join(''); } }
+        function loadC(m, dt, n) { document.getElementById('matter').value = m; document.getElementById('dt-pk').value = dt.replace(' ', 'T'); document.getElementById('note-body').innerText = n || '无笔记'; document.getElementById('note-card').style.display = 'block'; pk(); closeM('lib-modal'); }
+        function openLib() { document.getElementById('lib-modal').style.display = 'block'; }
+        const drop = document.getElementById('drop-box'); drop.onclick = () => { const i = document.createElement('input'); i.type = 'file'; i.onchange = e => handleF(e.target.files[0]); i.click(); }; drop.ondragover = e => { e.preventDefault(); drop.style.borderColor = 'var(--accent)'; }; drop.ondrop = e => { e.preventDefault(); handleF(e.dataTransfer.files[0]); };
+        function handleF(file) { if (!file) return; const r = new FileReader(); r.onload = e => { saveDB(e.target.result); initSQL(e.target.result); }; r.readAsArrayBuffer(file); }
         function share() { showT('生成中...'); html2canvas(document.body).then(v => { const a = document.createElement('a'); a.download = 'QiMen_Card.png'; a.href = v.toDataURL(); a.click(); }); }
-
-        window.onload = () => {
-            syncPK();
-            const request = indexedDB.open('QimenDBStore', 1);
-            request.onupgradeneeded = ev => ev.target.result.createObjectStore('dbFile');
-            request.onsuccess = e => {
-                const db = e.target.result;
-                const tx = db.transaction('dbFile', 'readonly');
-                tx.objectStore('dbFile').get('current').onsuccess = event => {
-                    if (event.target.result) initSQL(event.target.result);
-                };
-            };
-        };
+        window.onload = () => { syncPK(); loadSavedDB(); };
     </script>
 </body>
 
