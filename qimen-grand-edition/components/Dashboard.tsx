@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Compass, Database, Star, Settings, Clock, Share2, Plus, Calendar } from 'lucide-react';
+import { Compass, Database, Star, Settings, Clock, Share2, Plus, Calendar, Zap } from 'lucide-react';
 
 export default function ZenDashboard({ user }: { user: any }) {
     const [matter, setMatter] = useState('');
