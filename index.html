@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>奇门遁甲 - 智能排盘系统</title>
-    <!-- 引入高精度历法库 -->
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
@@ -364,7 +363,7 @@
     </div>
     <div class="main-info">
         <div class="info-r" style="border-bottom: none; margin-bottom: 5px;"><span class="val"
-                style="color:#b8905b; font-weight:bold;">转盘奇门 · 寄坤 · 置闰 · 演示版</span></div>
+                style="color:#b8905b; font-weight:bold;">转盘奇门 · 寄坤 · 置闰 · 稳定版</span></div>
         <div class="info-r"><span class="lbl">日期</span><span class="val"
                 style="display:flex; align-items:center;"><input type="datetime-local" id="custom-dt"
                     class="dt-input"><button class="dt-btn" onclick="jumpToDate()">排盘</button></span></div>
@@ -417,7 +416,7 @@
     <div id="helpModal" class="modal">
         <div class="modal-content"><span class="close" onclick="closeModal('helpModal')">&times;</span>
             <h2 style="color:#b8905b">使用说明</h2>
-            <p>本系统采用置闰法排盘，数据计算依赖 lunar-javascript 库。</p>
+            <p>本系统采用置闰法排盘，接口已修复。</p>
         </div>
     </div>
     <div id="palaceModal" class="modal">
@@ -427,58 +426,62 @@
         </div>
     </div>
     <script>
-        const TIANGAN = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'], DIZHI = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'], SANQI_LIUYI = ['戊', '己', '庚', '辛', '壬', '癸', '丁', '丙', '乙'], ZHUANPAN_ORDER = [1, 8, 3, 4, 9, 2, 7, 6], BAMEN_ORIG = { 1: '休门', 2: '死门', 3: '伤门', 4: '杜门', 6: '开门', 7: '惊门', 8: '生门', 9: '景门' }, JIUXING_ORIG = { 1: '天蓬', 2: '天芮', 3: '天冲', 4: '天辅', 5: '天禽', 6: '天心', 7: '天柱', 8: '天任', 9: '天英' }, BASHEN = ['值符', '螣蛇', '太阴', '六合', '白虎', '玄武', '九地', '九天'];
-        let currentDate = new Date();
-        function updateDisplay(res) {
-            document.getElementById('jieqi-val').innerText = res.jqName;
-            document.getElementById('jushu-val').innerText = res.dun + res.ju + "局(" + res.sy + ")";
-            document.getElementById('xunshou-val').innerText = res.xunshou;
-            document.getElementById('zhifu-val').innerText = res.zhifu;
-            document.getElementById('zhishi-val').innerText = res.zhishi;
-            document.getElementById('xunkong-val').innerText = res.xunkong;
-            document.getElementById('yima-val').innerText = ["", "坎1", "坤2", "震3", "巽4", "中5", "乾6", "兑7", "艮8", "离9"][res.yima];
+        const T = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'], D = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'], SQ = ['戊', '己', '庚', '辛', '壬', '癸', '丁', '丙', '乙'], ZO = [1, 8, 3, 4, 9, 2, 7, 6], BO = { 1: '休门', 2: '死门', 3: '伤门', 4: '杜门', 6: '开门', 7: '惊门', 8: '生门', 9: '景门' }, XO = { 1: '天蓬', 2: '天芮', 3: '天冲', 4: '天辅', 5: '天禽', 6: '天心', 7: '天柱', 8: '天任', 9: '天英' }, BS = ['值符', '螣蛇', '太阴', '六合', '白虎', '玄武', '九地', '九天'];
+        let curD = new Date();
+        function updateUI(r) {
+            document.getElementById('jieqi-val').innerText = r.jq;
+            document.getElementById('jushu-val').innerText = r.du + r.ju + "局(" + r.sy + ")";
+            document.getElementById('xunshou-val').innerText = r.xs;
+            document.getElementById('zhifu-val').innerText = r.zf;
+            document.getElementById('zhishi-val').innerText = r.zs;
+            document.getElementById('xunkong-val').innerText = r.xk;
+            document.getElementById('yima-val').innerText = ["", "坎1", "坤2", "震3", "巽4", "中5", "乾6", "兑7", "艮8", "离9"][r.ym];
             const bz = document.querySelectorAll('.bazi-val');
-            bz[0].innerText = res.lunar.getYearInGanZhiExact(); bz[1].innerText = res.lunar.getMonthInGanZhiExact(); bz[2].innerText = res.lunar.getDayInGanZhiExact(); bz[3].innerText = res.lunar.getTimeInGanZhi();
-            const grid = document.getElementById('qimen-grid'); grid.innerHTML = '';
-            [4, 9, 2, 3, 5, 7, 8, 1, 6].forEach(gn => {
-                const f = res.jg[gn], wrapper = document.createElement('div'); wrapper.className = 'palace-wrapper'; wrapper.onclick = () => showPalace(gn, res);
-                if (gn === 5) { wrapper.innerHTML = `<div class="palace" style="justify-content:center;align-items:center;"><span class="p-stem" style="color:#666">${f.dp}</span></div>`; grid.appendChild(wrapper); return; }
-                const tpT = res.marks[gn].gan_tags[f.tp] || [], dpT = res.marks[gn].gan_tags[f.dp] || [], getS = t => t.includes('击刑') ? 'color:#8b00cc;font-weight:bold;' : t.includes('门迫') ? 'color:#cc0000;font-weight:bold;' : t.includes('入墓') ? 'color:#cc8800;font-weight:bold;' : t.includes('符使') ? 'color:#00bfa5;font-weight:bold;' : '';
-                const badge = document.createElement('div'); badge.className = 'naji-badge'; badge.style.display = 'none'; badge.innerText = '纳吉'; badge.onclick = e => { e.stopPropagation(); showNaji(gn, res); }; wrapper.appendChild(badge);
-                wrapper.innerHTML += `<div class="palace"><div class="p-row"><div class="p-left"><span class="p-shen">${res.xunkong.includes(DIZHI[["", 0, 7, 2, 4, 0, 10, 8, 1, 6][gn]]) ? '<span class="circle">○</span>' : ''}${f.shen}</span></div><div class="p-right">${gn === res.yima ? '<span class="ma-ext">🐎</span>' : ''}</div></div><div class="p-row"><div class="p-left"><span class="p-yingan">${f.yingan}</span><span class="p-xing">${f.xing}</span></div><div class="p-right"><div class="stem-group"><span class="cs-label">${calcCS(f.tp, gn)}</span><span class="p-stem" style="${getS(tpT)}">${f.tp}</span></div></div></div><div class="p-row"><div class="p-left"><span class="p-men" style="${getS(res.marks[gn].tags)}">${f.men}</span></div><div class="p-right"><div class="stem-group"><span class="cs-label">${calcCS(f.dp, gn)}</span><span class="p-stem" style="${getS(dpT)}">${f.dp}</span></div></div></div></div>`; grid.appendChild(wrapper);
+            bz[0].innerText = r.lu.getYearInGanZhiExact(); bz[1].innerText = r.lu.getMonthInGanZhiExact(); bz[2].innerText = r.lu.getDayInGanZhiExact(); bz[3].innerText = r.lu.getTimeInGanZhi();
+            const g = document.getElementById('qimen-grid'); g.innerHTML = '';
+            [4, 9, 2, 3, 5, 7, 8, 1, 6].forEach(n => {
+                const f = r.jg[n], w = document.createElement('div'); w.className = 'palace-wrapper'; w.onclick = () => showP(n, r);
+                if (n === 5) { w.innerHTML = `<div class="palace" style="justify-content:center;align-items:center;"><span class="p-stem" style="color:#666">${f.dp}</span></div>`; g.appendChild(w); return; }
+                const tpT = r.mk[n].gt[f.tp] || [], dpT = r.mk[n].gt[f.dp] || [], getS = t => t.includes('击刑') ? 'color:#8b00cc;font-weight:bold;' : t.includes('门迫') ? 'color:#cc0000;font-weight:bold;' : t.includes('入墓') ? 'color:#cc8800;font-weight:bold;' : t.includes('符使') ? 'color:#00bfa5;font-weight:bold;' : '';
+                w.innerHTML = `<div class="naji-badge" style="display:none">纳吉</div><div class="palace"><div class="p-row"><div class="p-left"><span class="p-shen">${r.xk.includes(D[["", 0, 7, 2, 4, 0, 10, 8, 1, 6][n]]) ? '<span class="circle">○</span>' : ''}${f.sn}</span></div><div class="p-right">${n === r.ym ? '<span class="ma-ext">🐎</span>' : ''}</div></div><div class="p-row"><div class="p-left"><span class="p-yingan">${f.yg}</span><span class="p-xing">${f.xi}</span></div><div class="p-right"><div class="stem-group"><span class="cs-label">${calcCS(f.tp, n)}</span><span class="p-stem" style="${getS(tpT)}">${f.tp}</span></div></div></div><div class="p-row"><div class="p-left"><span class="p-men" style="${getS(r.mk[n].ts)}">${f.me}</span></div><div class="p-right"><div class="stem-group"><span class="cs-label">${calcCS(f.dp, n)}</span><span class="p-stem" style="${getS(dpT)}">${f.dp}</span></div></div></div></div>`;
+                const b = w.querySelector('.naji-badge'); b.onclick = e => { e.stopPropagation(); showN(n, r); };
+                g.appendChild(w);
             });
         }
-        function calcCS(g, p) { const s = { '甲': '亥', '乙': '午', '丙': '寅', '丁': '酉', '戊': '寅', '己': '酉', '庚': '巳', '辛': '子', '壬': '申', '癸': '卯' }, d = { '甲': 1, '乙': -1, '丙': 1, '丁': -1, '戊': 1, '己': -1, '庚': 1, '辛': -1, '壬': 1, '癸': -1 }, st = ["长生", "沐浴", "冠带", "临官", "帝旺", "衰", "病", "死", "墓", "绝", "胎", "养"]; if (!s[g]) return ""; const t = { 1: ['子'], 8: ['丑', '寅'], 3: ['卯'], 4: ['辰', '巳'], 9: ['午'], 2: ['未', '申'], 7: ['酉'], 6: ['戌', '亥'], 5: ['未', '申'] }[p]; const si = DIZHI.indexOf(s[g]); return t.map(z => { const ti = DIZHI.indexOf(z); return st[(d[g] === 1 ? (ti - si + 12) % 12 : (si - ti + 12) % 12)]; })[0]; }
+        function calcCS(g, p) { const s = { '甲': '亥', '乙': '午', '丙': '寅', '丁': '酉', '戊': '寅', '己': '酉', '庚': '巳', '辛': '子', '壬': '申', '癸': '卯' }, d = { '甲': 1, '乙': -1, '丙': 1, '丁': -1, '戊': 1, '己': -1, '庚': 1, '辛': -1, '壬': 1, '癸': -1 }, st = ["长生", "沐浴", "冠带", "临官", "帝旺", "衰", "病", "死", "墓", "绝", "胎", "养"]; if (!s[g]) return ""; const t = { 1: ['子'], 8: ['丑', '寅'], 3: ['卯'], 4: ['辰', '巳'], 9: ['午'], 2: ['未', '申'], 7: ['酉'], 6: ['戌', '亥'], 5: ['未', '申'] }[p]; const si = D.indexOf(s[g]); const ti = D.indexOf(t[0]); return st[(d[g] === 1 ? (ti - si + 12) % 12 : (si - ti + 12) % 12)]; }
         function paipan(date) {
-            const solar = window.Solar.fromDate(date), lunar = solar.getLunar(), hg = lunar.getTimeInGanZhi(), xs = getXunShou(hg), dgan = { '甲子': '戊', '甲戌': '己', '甲申': '庚', '甲午': '辛', '甲辰': '壬', '甲寅': '癸' }[xs];
-            const prev = lunar.getPrevJieQi(), jqName = prev.getName(), jqIdx = ['冬至', '小寒', '大寒', '立春', '雨水', '惊蛰', '春分', '清明', '谷雨', '立夏', '小满', '芒种', '夏至', '小暑', '大暑', '立秋', '处暑', '白露', '秋分', '寒露', '霜降', '立冬', '小雪', '大雪'].indexOf(jqName);
-            const days = Math.floor((new Date(solar.getYear(), solar.getMonth() - 1, solar.getDay()) - new Date(1900, 0, 1)) / 86400000), sy = Math.floor(((10 + days) % 60 % 15) / 5), ju = [[1, 7, 4], [2, 8, 5], [3, 9, 6], [8, 5, 2], [9, 6, 3], [1, 7, 4], [3, 9, 6], [4, 1, 7], [5, 2, 8], [4, 1, 7], [5, 2, 8], [6, 3, 9], [9, 3, 6], [8, 2, 5], [7, 1, 4], [2, 5, 8], [1, 4, 7], [9, 3, 6], [7, 1, 4], [6, 9, 3], [5, 8, 2], [6, 9, 3], [5, 8, 2], [4, 7, 1]][jqIdx][sy];
-            const dp = {};[1, 2, 3, 4, 5, 6, 7, 8, 9].forEach((g, i) => { dp[jqIdx < 12 ? [1, 2, 3, 4, 5, 6, 7, 8, 9][(order = [1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(ju) + i) % 9] : [1, 2, 3, 4, 5, 6, 7, 8, 9][([1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(ju) - i + 9) % 9]] = SANQI_LIUYI[i]; });
-            const xsG = Object.keys(dp).find(k => dp[k] === dgan), xsActual = xsG == 5 ? 2 : parseInt(xsG), zhishi = BAMEN_ORIG[xsG] || '死门', sg = hg[0] === '甲' ? dgan : hg[0], sgG = Object.keys(dp).find(k => dp[k] === sg), sgActual = sgG == 5 ? 2 : parseInt(sgG);
-            const steps = (DIZHI.indexOf(hg[1]) - DIZHI.indexOf(xs.substring(1)) + 12) % 12; let cg = parseInt(xsG); for (let i = 0; i < steps; i++)cg = jqIdx < 12 ? (cg == 9 ? 1 : cg + 1) : (cg == 1 ? 9 : cg - 1);
-            const zsT = cg == 5 ? 2 : cg, getPos = g => ZHUANPAN_ORDER.indexOf(g == 5 ? 2 : g), xsP = getPos(xsActual), sgP = getPos(sgActual), zsP = getPos(zsT), jg = {};
-            for (let g = 1; g <= 9; g++) {
-                if (g == 5) { jg[g] = { dp: dp[5], yingan: '' }; continue; }
-                const p = ZHUANPAN_ORDER.indexOf(g), xingG = ZHUANPAN_ORDER[(p - (sgP - xsP + 8) % 8 + 8) % 8], menG = ZHUANPAN_ORDER[(p - (zsP - xsP + 8) % 8 + 8) % 8];
-                jg[g] = { dp: dp[g], tp: dp[xingG] || dp[5], xing: JIUXING_ORIG[xingG], men: BAMEN_ORIG[menG] || '死门', shen: BASHEN[jqIdx < 12 ? (p - sgP + 8) % 8 : (sgP - p + 8) % 8] };
-            }
-            const yinMap = {}; for (let i = 0; i < 9; i++)yinMap[jqIdx < 12 ? (zsT + i - 1) % 9 + 1 : (zsT - i + 9 - 1) % 9 + 1] = SANQI_LIUYI[(SANQI_LIUYI.indexOf(sg) + i) % 9];
-            for (let g = 1; g <= 9; g++)jg[g].yingan = yinMap[g];
-            const marks = {}; for (let g = 1; g <= 9; g++) { if (g == 5) continue; const m = { tags: [], gan_tags: {} }; if (['伤门', '杜门'].includes(jg[g].men) && [2, 8].includes(g)) m.tags.push('门迫'); if (['开门', '惊门'].includes(jg[g].men) && [3, 4].includes(g)) m.tags.push('门迫'); if (jg[g].shen == '值符' || jg[g].men == zhishi) m.tags.push('符使');[jg[g].tp, jg[g].dp, jg[g].yingan].forEach(gan => { const t = []; if ({ '己': [2], '戊': [3], '壬': [4], '癸': [4], '庚': [8], '辛': [9] }[gan]?.includes(g)) t.push('击刑'); if ({ '甲': [2], '癸': [2], '乙': [6], '丙': [6], '戊': [6], '丁': [8], '己': [8], '庚': [8], '辛': [4], '壬': [4] }[gan]?.includes(g)) t.push('入墓'); m.gan_tags[gan] = t; }); marks[g] = m; }
-            return { lunar, jg, zhifu: JIUXING_ORIG[xsG], zhishi, xunshou: xs, dun: jqIdx < 12 ? '阳遁' : '阴遁', ju, sy: ['上元', '中元', '下元'][sy], jqName, xunkong: lunar.getXunKong(), yima: { '申': 8, '子': 8, '辰': 8, '寅': 2, '午': 2, '戌': 2, '巳': 6, '酉': 6, '丑': 6, '亥': 4, '卯': 4, '未': 4 }[hg[1]], marks };
+            try {
+                const sol = window.Solar.fromDate(date), lun = sol.getLunar(), hg = lun.getTimeInGanZhi(), xs = getXS(hg), dg = { '甲子': '戊', '甲戌': '己', '甲申': '庚', '甲午': '辛', '甲辰': '壬', '甲寅': '癸' }[xs];
+                const jn = lun.getPrevJieQi().getName(), ji = ['冬至', '小寒', '大寒', '立春', '雨水', '惊蛰', '春分', '清明', '谷雨', '立夏', '小满', '芒种', '夏至', '小暑', '大暑', '立秋', '处暑', '白露', '秋分', '寒露', '霜降', '立冬', '小雪', '大雪'].indexOf(jn);
+                const dayOrder = (10 + Math.floor((new Date(sol.getYear(), sol.getMonth() - 1, sol.getDay()) - new Date(1900, 0, 1)) / 86400000)) % 60, sy = Math.floor((dayOrder % 15) / 5), ju = [[1, 7, 4], [2, 8, 5], [3, 9, 6], [8, 5, 2], [9, 6, 3], [1, 7, 4], [3, 9, 6], [4, 1, 7], [5, 2, 8], [4, 1, 7], [5, 2, 8], [6, 3, 9], [9, 3, 6], [8, 2, 5], [7, 1, 4], [2, 5, 8], [1, 4, 7], [9, 3, 6], [7, 1, 4], [6, 9, 3], [5, 8, 2], [6, 9, 3], [5, 8, 2], [4, 7, 1]][ji][sy];
+                const dp = {};[1, 2, 3, 4, 5, 6, 7, 8, 9].forEach((g, i) => { dp[ji < 12 ? [1, 2, 3, 4, 5, 6, 7, 8, 9][([1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(ju) + i) % 9] : [1, 2, 3, 4, 5, 6, 7, 8, 9][([1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(ju) - i + 9) % 9]] = SQ[i]; });
+                const xg = Object.keys(dp).find(k => dp[k] === dg), xa = xg == 5 ? 2 : parseInt(xg), zs = BO[xg] || '死门', sg = hg[0] === '甲' ? dg : hg[0], sgG = Object.keys(dp).find(k => dp[k] === sg), sa = sgG == 5 ? 2 : parseInt(sgG);
+                const st = (D.indexOf(hg[1]) - D.indexOf(xs.substring(1)) + 12) % 12; let cg = parseInt(xg); for (let i = 0; i < st; i++)cg = ji < 12 ? (cg == 9 ? 1 : cg + 1) : (cg == 1 ? 9 : cg - 1);
+                const zt = cg == 5 ? 2 : cg, get = (g) => ZO.indexOf(g == 5 ? 2 : g), xp = get(xa), sp = get(sa), zp = get(zt), jg = {};
+                for (let n = 1; n <= 9; n++) {
+                    if (n == 5) { jg[n] = { dp: dp[5], yg: '' }; continue; }
+                    const p = ZO.indexOf(n), xiG = ZO[(p - (sp - xp + 8) % 8 + 8) % 8], meG = ZO[(p - (zp - xp + 8) % 8 + 8) % 8];
+                    jg[n] = { dp: dp[n], tp: dp[xiG] || dp[5], xi: XO[xiG], me: BO[meG] || '死门', sn: BS[ji < 12 ? (p - sp + 8) % 8 : (sp - p + 8) % 8] };
+                }
+                const ym = {}; for (let i = 0; i < 9; i++)ym[ji < 12 ? (zt + i - 1) % 9 + 1 : (zt - i + 9 - 1) % 9 + 1] = SQ[(SQ.indexOf(sg) + i) % 9];
+                for (let n = 1; n <= 9; n++)jg[n].yg = ym[n];
+                const mk = {}; for (let n = 1; n <= 9; n++) { if (n == 5) continue; const m = { ts: [], gt: {} }; if (['伤门', '杜门'].includes(jg[n].me) && [2, 8].includes(n)) m.ts.push('门迫'); if (['开门', '惊门'].includes(jg[n].me) && [3, 4].includes(n)) m.ts.push('门迫');[jg[n].tp, jg[n].dp, jg[n].yg].forEach(gan => { const t = []; if ({ '己': [2], '戊': [3], '壬': [4], '癸': [4], '庚': [8], '辛': [9] }[gan]?.includes(n)) t.push('击刑'); if ({ '甲': [2], '癸': [2], '乙': [6], '丙': [6], '戊': [6], '丁': [8], '己': [8], '庚': [8], '辛': [4], '壬': [4] }[gan]?.includes(n)) t.push('入墓'); m.gt[gan] = t; }); mk[n] = m; }
+                const xkStr = lun.getEightChar().getDayXunKong(); // GitHub compatible API
+                return { lu: lun, jg, zf: XO[xa], zs, xs, du: ji < 12 ? '阳遁' : '阴遁', ju, sy: ['上元', '中元', '下元'][sy], jq: jn, xk: xkStr, ym: { '申': 8, '子': 8, '辰': 8, '寅': 2, '午': 2, '戌': 2, '巳': 6, '酉': 6, '丑': 6, '亥': 4, '卯': 4, '未': 4 }[hg[1]], mk };
+            } catch (e) { console.error("PAIPAN ERROR:", e); return null; }
         }
-        function getXunShou(gz) { const gi = TIANGAN.indexOf(gz[0]), zi = DIZHI.indexOf(gz[1]); return "甲" + DIZHI[(zi - gi + 12) % 12]; }
-        function resetToNow() { currentDate = new Date(); document.getElementById('custom-dt').value = new Date(currentDate.getTime() - currentDate.getTimezoneOffset() * 60000).toISOString().substring(0, 16); updateDisplay(paipan(currentDate)); }
-        function jumpToDate() { const v = document.getElementById('custom-dt').value; if (v) { currentDate = new Date(v); updateDisplay(paipan(currentDate)); } }
-        function stepTime(h) { currentDate.setHours(currentDate.getHours() + h); document.getElementById('custom-dt').value = new Date(currentDate.getTime() - currentDate.getTimezoneOffset() * 60000).toISOString().substring(0, 16); updateDisplay(paipan(currentDate)); }
-        function toggleCS() { document.body.classList.toggle('show-cs'); showToast(document.body.classList.contains('show-cs') ? '已显示长生' : '已隐藏长生'); }
-        function toggleNaji() { const b = document.getElementById('nav-naji'); const active = b.classList.toggle('active-nj'); document.querySelectorAll('.naji-badge').forEach(i => i.style.display = active ? 'flex' : 'none'); }
-        function showPalace(gn, res) { document.getElementById('palace-title').innerText = ["", "坎一", "坤二", "震三", "巽四", "中五", "乾六", "兑七", "艮八", "离九"][gn]; document.getElementById('palace-content').innerHTML = `<div style="line-height:2"><b>天干：</b>${res.jg[gn].tp}+${res.jg[gn].dp}<br><b>格局：</b>排盘推演中...</div>`; document.getElementById('palaceModal').style.display = 'block'; }
-        function showNaji(gn, res) { document.getElementById('naji-content').innerHTML = `<h3 style="color:#28a745">纳吉方案</h3><p>【颜色】${{ "甲": "绿", "乙": "浅绿", "丙": "红", "丁": "浅红", "戊": "棕黄", "己": "浅黄", "庚": "白", "辛": "金", "壬": "蓝黑", "癸": "浅蓝" }[res.jg[gn].tp]} - ${{ "甲": "绿", "乙": "浅绿", "丙": "红", "丁": "浅红", "戊": "棕黄", "己": "浅黄", "庚": "白", "辛": "金", "壬": "蓝黑", "癸": "浅蓝" }[res.jg[gn].dp]}</p>`; document.getElementById('najiModal').style.display = 'block'; }
+        function getXS(gz) { const gi = T.indexOf(gz[0]), zi = D.indexOf(gz[1]); return "甲" + D[(zi - gi + 12) % 12]; }
+        function resetToNow() { curD = new Date(); document.getElementById('custom-dt').value = new Date(curD.getTime() - curD.getTimezoneOffset() * 60000).toISOString().substring(0, 16); const r = paipan(curD); if (r) updateUI(r); }
+        function jumpToDate() { const v = document.getElementById('custom-dt').value; if (v) { curD = new Date(v); const r = paipan(curD); if (r) updateUI(r); } }
+        function stepTime(h) { curD.setHours(curD.getHours() + h); document.getElementById('custom-dt').value = new Date(curD.getTime() - curD.getTimezoneOffset() * 60000).toISOString().substring(0, 16); const r = paipan(curD); if (r) updateUI(r); }
+        function toggleCS() { document.body.classList.toggle('show-cs'); showToast(document.body.classList.contains('show-cs') ? '已开启长生' : '已关闭长生'); }
+        function toggleNaji() { const b = document.getElementById('nav-naji'); const a = b.classList.toggle('active-nj'); document.querySelectorAll('.naji-badge').forEach(i => i.style.display = a ? 'flex' : 'none'); }
+        function showP(n, r) { document.getElementById('palace-title').innerText = ["", "坎一", "坤二", "震三", "巽四", "中五", "乾六", "兑七", "艮八", "离九"][n]; document.getElementById('palace-content').innerHTML = `格局推演中...`; document.getElementById('palaceModal').style.display = 'block'; }
+        function showN(n, r) { document.getElementById('naji-content').innerHTML = `纳吉方案...`; document.getElementById('najiModal').style.display = 'block'; }
         function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000); }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function shareChart() { showToast('生成分享图中...'); html2canvas(document.body).then(c => { const k = document.createElement('a'); k.download = '奇门_' + Date.now() + '.png'; k.href = c.toDataURL(); k.click(); }); }
-        window.onload = () => { setTimeout(resetToNow, 200); };
+        function shareChart() { showToast('生成图中...'); html2canvas(document.body).then(c => { const l = document.createElement('a'); l.download = 'Qimen.png'; l.href = c.toDataURL(); l.click(); }); }
+        window.onload = () => { setTimeout(resetToNow, 500); };
     </script>
 </body>
 
