@@ -224,20 +224,25 @@
             font-size: 1.1rem;
         }
 
-        /* Nav Tab - Premium Apple Style */
+        /* Nav Tab - Premium Apple Style (Centered) */
         .nav-tab {
             position: fixed;
             bottom: 0;
-            left: 0;
+            left: 50%;
+            transform: translateX(-50%);
             width: 100%;
+            max-width: 500px;
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(25px) saturate(180%);
             -webkit-backdrop-filter: blur(25px) saturate(180%);
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-bottom: none;
             display: flex;
-            padding: 12px 0 34px;
+            padding: 10px 0 30px;
             z-index: 2000;
             justify-content: space-around;
+            border-radius: 24px 24px 0 0;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.03);
         }
 
         .nav-btn {
@@ -444,13 +449,13 @@
     <script>
         const TI = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'], DI = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'], SQ = ['戊', '己', '庚', '辛', '壬', '癸', '丁', '丙', '乙'], ZO = [1, 8, 3, 4, 9, 2, 7, 6], BO = { 1: '休门', 2: '死门', 3: '伤门', 4: '杜门', 6: '开门', 7: '惊门', 8: '生门', 9: '景门' }, XO = { 1: '天蓬', 2: '天芮', 3: '天冲', 4: '天辅', 5: '天禽', 6: '天心', 7: '天柱', 8: '天任', 9: '天英' }, BS = ['值符', '螣蛇', '太阴', '六合', '白虎', '玄武', '九地', '九天'];
         let cT = new Date();
-        function pk() { const v = document.getElementById('dt-pk').value; if(v){ cT = new Date(v); rdr(paipan(cT)); } }
+        function pk() { const v = document.getElementById('dt-pk').value; if (v) { cT = new Date(v); rdr(paipan(cT)); } }
         function goNow() { cT = new Date(); syncPK(); }
-        function step(h) { cT.setHours(cT.getHours()+h); syncPK(); }
-        function syncPK() { document.getElementById('dt-pk').value = new Date(cT.getTime() - cT.getTimezoneOffset()*60000).toISOString().substring(0,16); rdr(paipan(cT)); }
+        function step(h) { cT.setHours(cT.getHours() + h); syncPK(); }
+        function syncPK() { document.getElementById('dt-pk').value = new Date(cT.getTime() - cT.getTimezoneOffset() * 60000).toISOString().substring(0, 16); rdr(paipan(cT)); }
         function getXS(gz) { const gi = TI.indexOf(gz[0]), zi = DI.indexOf(gz[1]); return "甲" + DI[(zi - gi + 12) % 12]; }
         function calcCS(g, p) { const s = { '甲': '亥', '乙': '午', '丙': '寅', '丁': '酉', '戊': '寅', '己': '酉', '庚': '巳', '辛': '子', '壬': '申', '癸': '卯' }, d = { '甲': 1, '乙': -1, '丙': 1, '丁': -1, '戊': 1, '己': -1, '庚': 1, '辛': -1, '壬': 1, '癸': -1 }, st = ["长生", "沐浴", "冠带", "临官", "帝旺", "衰", "病", "死", "墓", "绝", "胎", "养"]; if (!s[g]) return ""; const t = { 1: ['子'], 8: ['丑', '寅'], 3: ['卯'], 4: ['辰', '巳'], 9: ['午'], 2: ['未', '申'], 7: ['酉'], 6: ['戌', '亥'], 5: ['未', '申'] }[p]; const si = DI.indexOf(s[g]); const ti = DI.indexOf(t[0]); return st[(d[g] === 1 ? (ti - si + 12) % 12 : (si - ti + 12) % 12)]; }
-        function paipan(date){
+        function paipan(date) {
             try {
                 const sol = window.Solar.fromDate(date), lun = sol.getLunar(), hg = lun.getTimeInGanZhi(), xs = getXS(hg), dg = { '甲子': '戊', '甲戌': '己', '甲申': '庚', '甲午': '辛', '甲辰': '壬', '甲寅': '癸' }[xs], jn = lun.getPrevJieQi().getName(), ji = ['冬至', '小寒', '大寒', '立春', '雨水', '惊蛰', '春分', '清明', '谷雨', '立夏', '小满', '芒种', '夏至', '小暑', '大暑', '立秋', '处暑', '白露', '秋分', '寒露', '霜降', '立冬', '小雪', '大雪'].indexOf(jn), dayO = (10 + Math.floor((new Date(sol.getYear(), sol.getMonth() - 1, sol.getDay()) - new Date(1900, 0, 1)) / 86400000)) % 60, sy = Math.floor((dayO % 15) / 5), ju = [[1, 7, 4], [2, 8, 5], [3, 9, 6], [8, 5, 2], [9, 6, 3], [1, 7, 4], [3, 9, 6], [4, 1, 7], [5, 2, 8], [4, 1, 7], [5, 2, 8], [6, 3, 9], [9, 3, 6], [8, 2, 5], [7, 1, 4], [2, 5, 8], [1, 4, 7], [9, 3, 6], [7, 1, 4], [6, 9, 3], [5, 8, 2], [6, 9, 3], [5, 8, 2], [4, 7, 1]][ji][sy], dp = {};[1, 2, 3, 4, 5, 6, 7, 8, 9].forEach((g, i) => { dp[ji < 12 ? [1, 2, 3, 4, 5, 6, 7, 8, 9][([1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(ju) + i) % 9] : [1, 2, 3, 4, 5, 6, 7, 8, 9][([1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(ju) - i + 9) % 9]] = SQ[i]; });
                 const xg = Object.keys(dp).find(k => dp[k] === dg), xa = xg == 5 ? 2 : parseInt(xg), sg = hg[0] === '甲' ? dg : hg[0], sgG = Object.keys(dp).find(k => dp[k] === sg), sa = sgG == 5 ? 2 : parseInt(sgG), st = (DI.indexOf(hg[1]) - DI.indexOf(xs.substring(1)) + 12) % 12; let cg = parseInt(xg); for (let i = 0; i < st; i++)cg = ji < 12 ? (cg == 9 ? 1 : cg + 1) : (cg == 1 ? 9 : cg - 1);
@@ -462,7 +467,7 @@
             } catch (e) { return null; }
         }
         function rdr(r) {
-            if(!r) return;
+            if (!r) return;
             document.getElementById('jq-v').innerText = r.jq;
             document.getElementById('js-v').innerText = r.du + r.ju + '局(' + r.sy + ')';
             document.getElementById('xs-v').innerText = r.xs;
@@ -482,10 +487,10 @@
         }
         function toggleCS() { document.body.classList.toggle('show-cs'); syncPK(); showT('状态切换中...'); }
         function toggleNJ() { const b = document.getElementById('nj-btn'); const a = b.classList.toggle('nj-on'); document.querySelectorAll('.nj-bd').forEach(i => i.style.display = a ? 'block' : 'none'); showT(a ? '开启吉位视野' : '关闭吉位'); }
-        function showT(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display='none', 2000); }
+        function showT(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000); }
         function openLib() { document.getElementById('lib-modal').style.display = 'block'; }
         function share() { showT('生成中...'); html2canvas(document.body).then(v => { const a = document.createElement('a'); a.download = 'QiMen_Card.png'; a.href = v.toDataURL(); a.click(); }); }
-        window.onclick = e => { if(e.target.className === 'modal') e.target.style.display = 'none'; }
+        window.onclick = e => { if (e.target.className === 'modal') e.target.style.display = 'none'; }
         window.onload = () => { syncPK(); };
     </script>
 </body>
