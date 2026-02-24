@@ -4,9 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>奇门遁甲 - 智能排盘系统</title>
+    <title>奇门遁甲 - 智能随身排盘</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap');
 
@@ -171,7 +172,7 @@
         }
 
         .p-stem {
-            font-size: 1.5rem;
+            font-size: 1.45rem;
             line-height: 1;
             white-space: nowrap;
             font-weight: bold;
@@ -205,11 +206,12 @@
             border: 2px solid #28a745;
             border-radius: 8px;
             padding: 6px 12px;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: bold;
             z-index: 20;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             animation: pulse 2s infinite;
+            pointer-events: none;
         }
 
         @keyframes pulse {
@@ -218,7 +220,7 @@
             }
 
             70% {
-                transform: translate(-50%, -50%) scale(1.1);
+                transform: translate(-50%, -50%) scale(1.08);
             }
 
             100% {
@@ -259,6 +261,11 @@
             margin-bottom: 2px;
         }
 
+        .nav-item.act-nj {
+            color: #28a745;
+            font-weight: bold;
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -272,12 +279,14 @@
 
         .modal-content {
             background: #fff;
-            margin: 15% auto;
+            margin: 10% auto;
             padding: 20px;
             border-radius: 12px;
             width: 85%;
-            max-width: 450px;
+            max-width: 500px;
             position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         .close {
@@ -319,6 +328,7 @@
             cursor: pointer;
             font-weight: bold;
             text-align: center;
+            font-size: 0.9rem;
         }
 
         .dt-input {
@@ -341,6 +351,43 @@
             margin-left: 5px;
         }
 
+        #drop-zone {
+            border: 2px dashed #b8905b;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            color: #8b7355;
+            background: #fdfdfb;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        #drop-zone.hover {
+            background: #f5f2ed;
+            border-color: #00bfa5;
+        }
+
+        .case-item {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        .case-item:hover {
+            background: #f9f9f9;
+        }
+
+        .case-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .case-meta {
+            font-size: 0.8rem;
+            color: #999;
+        }
+
         #toast {
             pointer-events: none;
             position: fixed;
@@ -353,6 +400,7 @@
             border-radius: 30px;
             z-index: 20000;
             display: none;
+            text-align: center;
         }
     </style>
 </head>
@@ -363,7 +411,7 @@
     </div>
     <div class="main-info">
         <div class="info-r" style="border-bottom: none; margin-bottom: 5px;"><span class="val"
-                style="color:#b8905b; font-weight:bold;">转盘奇门 · 寄坤 · 置闰 · 稳定版</span></div>
+                style="color:#b8905b; font-weight:bold; letter-spacing:1px;">转盘随身版 · 寄坤 · 置闰</span></div>
         <div class="info-r"><span class="lbl">日期</span><span class="val"
                 style="display:flex; align-items:center;"><input type="datetime-local" id="custom-dt"
                     class="dt-input"><button class="dt-btn" onclick="jumpToDate()">排盘</button></span></div>
@@ -398,25 +446,22 @@
     <div class="grid" id="qimen-grid"></div>
     <div class="action-bar">
         <div class="action-btn" onclick="stepTime(-2)">◀ 上一局</div>
-        <div class="action-btn" style="background:#6c757d" onclick="toggleCS()">长生状态</div>
+        <div class="action-btn" style="background:#6c757d" onclick="toggleCS()">显示长生</div>
         <div class="action-btn" onclick="stepTime(2)">下一局 ▶</div>
     </div>
     <div class="bottom-nav">
         <div class="nav-item" onclick="resetToNow()"><span class="nav-icon">🏠</span><span>现在</span></div>
+        <div class="nav-item" onclick="openCasesModal()"><span class="nav-icon">📁</span><span>档案库</span></div>
+        <div class="nav-item" id="nav-naji" onclick="toggleNaji()"><span class="nav-icon">✨</span><span>吉位开启</span>
+        </div>
         <div class="nav-item" onclick="shareChart()"><span class="nav-icon">📤</span><span>分享</span></div>
-        <div class="nav-item" id="nav-naji" onclick="toggleNaji()"><span class="nav-icon">✨</span><span>纳吉</span></div>
-        <div class="nav-item" onclick="showHelp()"><span class="nav-icon">❓</span><span>说明</span></div>
     </div>
     <div id="toast"></div>
-    <div id="najiModal" class="modal">
-        <div class="modal-content"><span class="close" onclick="closeModal('najiModal')">&times;</span>
-            <div id="naji-content"></div>
-        </div>
-    </div>
-    <div id="helpModal" class="modal">
-        <div class="modal-content"><span class="close" onclick="closeModal('helpModal')">&times;</span>
-            <h2 style="color:#b8905b">使用说明</h2>
-            <p>本系统采用置闰法排盘，接口已修复。</p>
+    <div id="casesModal" class="modal">
+        <div class="modal-content"><span class="close" onclick="closeModal('casesModal')">&times;</span>
+            <h3 style="color:#b8905b">本地档案接入</h3>
+            <div id="drop-zone">📂 点击或将 cases.db 拖拽至此</div>
+            <div id="case-list-box" style="margin-top:20px;"></div>
         </div>
     </div>
     <div id="palaceModal" class="modal">
@@ -443,45 +488,76 @@
                 const f = r.jg[n], w = document.createElement('div'); w.className = 'palace-wrapper'; w.onclick = () => showP(n, r);
                 if (n === 5) { w.innerHTML = `<div class="palace" style="justify-content:center;align-items:center;"><span class="p-stem" style="color:#666">${f.dp}</span></div>`; g.appendChild(w); return; }
                 const tpT = r.mk[n].gt[f.tp] || [], dpT = r.mk[n].gt[f.dp] || [], getS = t => t.includes('击刑') ? 'color:#8b00cc;font-weight:bold;' : t.includes('门迫') ? 'color:#cc0000;font-weight:bold;' : t.includes('入墓') ? 'color:#cc8800;font-weight:bold;' : t.includes('符使') ? 'color:#00bfa5;font-weight:bold;' : '';
-                w.innerHTML = `<div class="naji-badge" style="display:none">纳吉</div><div class="palace"><div class="p-row"><div class="p-left"><span class="p-shen">${r.xk.includes(D[["", 0, 7, 2, 4, 0, 10, 8, 1, 6][n]]) ? '<span class="circle">○</span>' : ''}${f.sn}</span></div><div class="p-right">${n === r.ym ? '<span class="ma-ext">🐎</span>' : ''}</div></div><div class="p-row"><div class="p-left"><span class="p-yingan">${f.yg}</span><span class="p-xing">${f.xi}</span></div><div class="p-right"><div class="stem-group"><span class="cs-label">${calcCS(f.tp, n)}</span><span class="p-stem" style="${getS(tpT)}">${f.tp}</span></div></div></div><div class="p-row"><div class="p-left"><span class="p-men" style="${getS(r.mk[n].ts)}">${f.me}</span></div><div class="p-right"><div class="stem-group"><span class="cs-label">${calcCS(f.dp, n)}</span><span class="p-stem" style="${getS(dpT)}">${f.dp}</span></div></div></div></div>`;
-                const b = w.querySelector('.naji-badge'); b.onclick = e => { e.stopPropagation(); showN(n, r); };
+                let njH = ""; const njR = { 1: ['开门'], 2: ['开门', '景门'], 3: ['休门', '景门'], 4: ['休门', '景门'], 6: ['休门', '生门'], 7: ['休门', '生门', '开门'], 8: ['开门', '景门'], 9: ['生门'] };
+                if (njR[n]?.includes(f.me) && !r.mk[n].ts.includes('门迫') && !tpT.includes('击刑') && f.sn !== '白虎' && !['天蓬', '天芮'].includes(f.xi)) njH = `<div class="naji-badge" style="display:${document.getElementById('nav-naji').classList.contains('act-nj') ? 'flex' : 'none'}">吉位</div>`;
+                w.innerHTML = `${njH}<div class="palace"><div class="p-row"><div class="p-left"><span class="p-shen">${r.xk.includes(D[["", 0, 7, 2, 4, 0, 10, 8, 1, 6][n]]) ? '<span class="circle">○</span>' : ''}${f.sn}</span></div><div class="p-right">${n === r.ym ? '<span class="ma-ext">🐎</span>' : ''}</div></div><div class="p-row"><div class="p-left"><span class="p-yingan" style="color:#aaa">${f.yg}</span><span class="p-xing">${f.xi}</span></div><div class="p-right"><div class="stem-group"><span class="cs-label">${calcCS(f.tp, n)}</span><span class="p-stem" style="${getS(tpT)}">${f.tp}</span></div></div></div><div class="p-row"><div class="p-left"><span class="p-men" style="${getS(r.mk[n].ts)}">${f.me}</span></div><div class="p-right"><div class="stem-group"><span class="cs-label">${calcCS(f.dp, n)}</span><span class="p-stem" style="${getS(dpT)}">${f.dp}</span></div></div></div></div>`;
                 g.appendChild(w);
             });
         }
         function calcCS(g, p) { const s = { '甲': '亥', '乙': '午', '丙': '寅', '丁': '酉', '戊': '寅', '己': '酉', '庚': '巳', '辛': '子', '壬': '申', '癸': '卯' }, d = { '甲': 1, '乙': -1, '丙': 1, '丁': -1, '戊': 1, '己': -1, '庚': 1, '辛': -1, '壬': 1, '癸': -1 }, st = ["长生", "沐浴", "冠带", "临官", "帝旺", "衰", "病", "死", "墓", "绝", "胎", "养"]; if (!s[g]) return ""; const t = { 1: ['子'], 8: ['丑', '寅'], 3: ['卯'], 4: ['辰', '巳'], 9: ['午'], 2: ['未', '申'], 7: ['酉'], 6: ['戌', '亥'], 5: ['未', '申'] }[p]; const si = D.indexOf(s[g]); const ti = D.indexOf(t[0]); return st[(d[g] === 1 ? (ti - si + 12) % 12 : (si - ti + 12) % 12)]; }
         function paipan(date) {
             try {
-                const sol = window.Solar.fromDate(date), lun = sol.getLunar(), hg = lun.getTimeInGanZhi(), xs = getXS(hg), dg = { '甲子': '戊', '甲戌': '己', '甲申': '庚', '甲午': '辛', '甲辰': '壬', '甲寅': '癸' }[xs];
-                const jn = lun.getPrevJieQi().getName(), ji = ['冬至', '小寒', '大寒', '立春', '雨水', '惊蛰', '春分', '清明', '谷雨', '立夏', '小满', '芒种', '夏至', '小暑', '大暑', '立秋', '处暑', '白露', '秋分', '寒露', '霜降', '立冬', '小雪', '大雪'].indexOf(jn);
-                const dayOrder = (10 + Math.floor((new Date(sol.getYear(), sol.getMonth() - 1, sol.getDay()) - new Date(1900, 0, 1)) / 86400000)) % 60, sy = Math.floor((dayOrder % 15) / 5), ju = [[1, 7, 4], [2, 8, 5], [3, 9, 6], [8, 5, 2], [9, 6, 3], [1, 7, 4], [3, 9, 6], [4, 1, 7], [5, 2, 8], [4, 1, 7], [5, 2, 8], [6, 3, 9], [9, 3, 6], [8, 2, 5], [7, 1, 4], [2, 5, 8], [1, 4, 7], [9, 3, 6], [7, 1, 4], [6, 9, 3], [5, 8, 2], [6, 9, 3], [5, 8, 2], [4, 7, 1]][ji][sy];
-                const dp = {};[1, 2, 3, 4, 5, 6, 7, 8, 9].forEach((g, i) => { dp[ji < 12 ? [1, 2, 3, 4, 5, 6, 7, 8, 9][([1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(ju) + i) % 9] : [1, 2, 3, 4, 5, 6, 7, 8, 9][([1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(ju) - i + 9) % 9]] = SQ[i]; });
-                const xg = Object.keys(dp).find(k => dp[k] === dg), xa = xg == 5 ? 2 : parseInt(xg), zs = BO[xg] || '死门', sg = hg[0] === '甲' ? dg : hg[0], sgG = Object.keys(dp).find(k => dp[k] === sg), sa = sgG == 5 ? 2 : parseInt(sgG);
-                const st = (D.indexOf(hg[1]) - D.indexOf(xs.substring(1)) + 12) % 12; let cg = parseInt(xg); for (let i = 0; i < st; i++)cg = ji < 12 ? (cg == 9 ? 1 : cg + 1) : (cg == 1 ? 9 : cg - 1);
-                const zt = cg == 5 ? 2 : cg, get = (g) => ZO.indexOf(g == 5 ? 2 : g), xp = get(xa), sp = get(sa), zp = get(zt), jg = {};
-                for (let n = 1; n <= 9; n++) {
-                    if (n == 5) { jg[n] = { dp: dp[5], yg: '' }; continue; }
-                    const p = ZO.indexOf(n), xiG = ZO[(p - (sp - xp + 8) % 8 + 8) % 8], meG = ZO[(p - (zp - xp + 8) % 8 + 8) % 8];
-                    jg[n] = { dp: dp[n], tp: dp[xiG] || dp[5], xi: XO[xiG], me: BO[meG] || '死门', sn: BS[ji < 12 ? (p - sp + 8) % 8 : (sp - p + 8) % 8] };
-                }
-                const ym = {}; for (let i = 0; i < 9; i++)ym[ji < 12 ? (zt + i - 1) % 9 + 1 : (zt - i + 9 - 1) % 9 + 1] = SQ[(SQ.indexOf(sg) + i) % 9];
-                for (let n = 1; n <= 9; n++)jg[n].yg = ym[n];
+                const sol = window.Solar.fromDate(date), lun = sol.getLunar(), hg = lun.getTimeInGanZhi(), xs = getXS(hg), dg = { '甲子': '戊', '甲戌': '己', '甲申': '庚', '甲午': '辛', '甲辰': '壬', '甲寅': '癸' }[xs], jn = lun.getPrevJieQi().getName(), ji = ['冬至', '小寒', '大寒', '立春', '雨水', '惊蛰', '春分', '清明', '谷雨', '立夏', '小满', '芒种', '夏至', '小暑', '大暑', '立秋', '处暑', '白露', '秋分', '寒露', '霜降', '立冬', '小雪', '大雪'].indexOf(jn), dayOrder = (10 + Math.floor((new Date(sol.getYear(), sol.getMonth() - 1, sol.getDay()) - new Date(1900, 0, 1)) / 86400000)) % 60, sy = Math.floor((dayOrder % 15) / 5), ju = [[1, 7, 4], [2, 8, 5], [3, 9, 6], [8, 5, 2], [9, 6, 3], [1, 7, 4], [3, 9, 6], [4, 1, 7], [5, 2, 8], [4, 1, 7], [5, 2, 8], [6, 3, 9], [9, 3, 6], [8, 2, 5], [7, 1, 4], [2, 5, 8], [1, 4, 7], [9, 3, 6], [7, 1, 4], [6, 9, 3], [5, 8, 2], [6, 9, 3], [5, 8, 2], [4, 7, 1]][ji][sy], dp = {};[1, 2, 3, 4, 5, 6, 7, 8, 9].forEach((g, i) => { dp[ji < 12 ? [1, 2, 3, 4, 5, 6, 7, 8, 9][([1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(ju) + i) % 9] : [1, 2, 3, 4, 5, 6, 7, 8, 9][([1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(ju) - i + 9) % 9]] = SQ[i]; });
+                const xg = Object.keys(dp).find(k => dp[k] === dg), xa = xg == 5 ? 2 : parseInt(xg), sg = hg[0] === '甲' ? dg : hg[0], sgG = Object.keys(dp).find(k => dp[k] === sg), sa = sgG == 5 ? 2 : parseInt(sgG), st = (D.indexOf(hg[1]) - D.indexOf(xs.substring(1)) + 12) % 12; let cg = parseInt(xg); for (let i = 0; i < st; i++)cg = ji < 12 ? (cg == 9 ? 1 : cg + 1) : (cg == 1 ? 9 : cg - 1);
+                const zt = cg == 5 ? 2 : cg, get = (g) => ZO.indexOf(g == 5 ? 2 : g), xp = get(xa), sp = get(sa), zp = get(zt), jg = {}, zhishi = BO[xg] || '死门';
+                for (let n = 1; n <= 9; n++) { if (n == 5) { jg[n] = { dp: dp[5], yg: '' }; continue; } const p = ZO.indexOf(n), xiG = ZO[(p - (sp - xp + 8) % 8 + 8) % 8], meG = ZO[(p - (zp - xp + 8) % 8 + 8) % 8]; jg[n] = { dp: dp[n], tp: dp[xiG] || dp[5], xi: XO[xiG], me: BO[meG] || '死门', sn: BS[ji < 12 ? (p - sp + 8) % 8 : (sp - p + 8) % 8] }; }
+                const ym = {}; for (let i = 0; i < 9; i++)ym[ji < 12 ? (zt + i - 1) % 9 + 1 : (zt - i + 9 - 1) % 9 + 1] = SQ[(SQ.indexOf(sg) + i) % 9]; for (let n = 1; n <= 9; n++)jg[n].yg = ym[n];
                 const mk = {}; for (let n = 1; n <= 9; n++) { if (n == 5) continue; const m = { ts: [], gt: {} }; if (['伤门', '杜门'].includes(jg[n].me) && [2, 8].includes(n)) m.ts.push('门迫'); if (['开门', '惊门'].includes(jg[n].me) && [3, 4].includes(n)) m.ts.push('门迫');[jg[n].tp, jg[n].dp, jg[n].yg].forEach(gan => { const t = []; if ({ '己': [2], '戊': [3], '壬': [4], '癸': [4], '庚': [8], '辛': [9] }[gan]?.includes(n)) t.push('击刑'); if ({ '甲': [2], '癸': [2], '乙': [6], '丙': [6], '戊': [6], '丁': [8], '己': [8], '庚': [8], '辛': [4], '壬': [4] }[gan]?.includes(n)) t.push('入墓'); m.gt[gan] = t; }); mk[n] = m; }
-                const xkStr = lun.getEightChar().getDayXunKong(); // GitHub compatible API
-                return { lu: lun, jg, zf: XO[xa], zs, xs, du: ji < 12 ? '阳遁' : '阴遁', ju, sy: ['上元', '中元', '下元'][sy], jq: jn, xk: xkStr, ym: { '申': 8, '子': 8, '辰': 8, '寅': 2, '午': 2, '戌': 2, '巳': 6, '酉': 6, '丑': 6, '亥': 4, '卯': 4, '未': 4 }[hg[1]], mk };
-            } catch (e) { console.error("PAIPAN ERROR:", e); return null; }
+                return { lu: lun, jg, zf: XO[xa], zs: zhishi, xs, du: ji < 12 ? '阳遁' : '阴遁', ju, sy: ['上元', '中元', '下元'][sy], jq: jn, xk: lun.getEightChar().getDayXunKong(), ym: { '申': 8, '子': 8, '辰': 8, '寅': 2, '午': 2, '戌': 2, '巳': 6, '酉': 6, '丑': 6, '亥': 4, '卯': 4, '未': 4 }[hg[1]], mk };
+            } catch (e) { console.error(e); return null; }
         }
         function getXS(gz) { const gi = T.indexOf(gz[0]), zi = D.indexOf(gz[1]); return "甲" + D[(zi - gi + 12) % 12]; }
         function resetToNow() { curD = new Date(); document.getElementById('custom-dt').value = new Date(curD.getTime() - curD.getTimezoneOffset() * 60000).toISOString().substring(0, 16); const r = paipan(curD); if (r) updateUI(r); }
         function jumpToDate() { const v = document.getElementById('custom-dt').value; if (v) { curD = new Date(v); const r = paipan(curD); if (r) updateUI(r); } }
         function stepTime(h) { curD.setHours(curD.getHours() + h); document.getElementById('custom-dt').value = new Date(curD.getTime() - curD.getTimezoneOffset() * 60000).toISOString().substring(0, 16); const r = paipan(curD); if (r) updateUI(r); }
-        function toggleCS() { document.body.classList.toggle('show-cs'); showToast(document.body.classList.contains('show-cs') ? '已开启长生' : '已关闭长生'); }
-        function toggleNaji() { const b = document.getElementById('nav-naji'); const a = b.classList.toggle('active-nj'); document.querySelectorAll('.naji-badge').forEach(i => i.style.display = a ? 'flex' : 'none'); }
-        function showP(n, r) { document.getElementById('palace-title').innerText = ["", "坎一", "坤二", "震三", "巽四", "中五", "乾六", "兑七", "艮八", "离九"][n]; document.getElementById('palace-content').innerHTML = `格局推演中...`; document.getElementById('palaceModal').style.display = 'block'; }
-        function showN(n, r) { document.getElementById('naji-content').innerHTML = `纳吉方案...`; document.getElementById('najiModal').style.display = 'block'; }
-        function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000); }
+        function toggleCS() { document.body.classList.toggle('show-cs'); showToast(document.body.classList.contains('show-cs') ? '长生开启' : '关闭'); }
+        function toggleNaji() { const b = document.getElementById('nav-naji'); const a = b.classList.toggle('act-nj'); document.querySelectorAll('.naji-badge').forEach(i => i.style.display = a ? 'flex' : 'none'); showToast(a ? '吉位视觉已开启' : '关闭'); }
+        function openCasesModal() { document.getElementById('casesModal').style.display = 'block'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function shareChart() { showToast('生成图中...'); html2canvas(document.body).then(c => { const l = document.createElement('a'); l.download = 'Qimen.png'; l.href = c.toDataURL(); l.click(); }); }
-        window.onload = () => { setTimeout(resetToNow, 500); };
+        function showP(n, r) { document.getElementById('palace-title').innerText = ["", "坎一", "坤二", "震三", "巽四", "中五", "乾六", "兑七", "艮八", "离九"][n]; document.getElementById('palace-content').innerHTML = `解析中...`; document.getElementById('palaceModal').style.display = 'block'; }
+        function shareChart() { showToast('生成分享卡片中...'); html2canvas(document.body).then(c => { const l = document.createElement('a'); l.download = 'Qimen_Chart.png'; l.href = c.toDataURL(); l.click(); }); }
+        function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000); }
+
+        // --- SQL Logic ---
+        let SQL_DB = null;
+        async function initDB(arrayBuffer) {
+            const config = { locateFile: filename => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/${filename}` };
+            const SQL = await initSqlJs(config);
+            SQL_DB = new SQL.Database(new Uint8Array(arrayBuffer));
+            renderCaseList();
+        }
+        function renderCaseList() {
+            if (!SQL_DB) return;
+            const res = SQL_DB.exec("SELECT id, name, chart_time, notes FROM cases ORDER BY chart_time DESC");
+            if (res.length === 0) return;
+            const rows = res[0].values;
+            const box = document.getElementById('case-list-box');
+            box.innerHTML = rows.map(r => `
+        <div class="case-item" onclick="loadCase('${r[2]}')">
+            <div class="case-title">${r[1] || '未命名案例'}</div>
+            <div class="case-meta">时间：${r[2]}</div>
+            <div style="font-size:0.85rem;color:#666">${r[3] ? r[3].substring(0, 30) + '...' : '无备注'}</div>
+        </div>
+    `).join('');
+        }
+        function loadCase(dt) {
+            document.getElementById('custom-dt').value = dt.replace(' ', 'T');
+            jumpToDate();
+            closeModal('casesModal');
+        }
+        const dropZone = document.getElementById('drop-zone');
+        dropZone.onclick = () => { const input = document.createElement('input'); input.type = 'file'; input.onchange = e => handleFile(e.target.files[0]); input.click(); };
+        dropZone.ondragover = e => { e.preventDefault(); dropZone.classList.add('hover'); };
+        dropZone.ondragleave = () => dropZone.classList.remove('hover');
+        dropZone.ondrop = e => { e.preventDefault(); dropZone.classList.remove('hover'); handleFile(e.dataTransfer.files[0]); };
+        function handleFile(file) {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => initDB(e.target.result);
+            reader.readAsArrayBuffer(file);
+            showToast('正在解析档案库...');
+        }
+        window.onload = () => { setTimeout(resetToNow, 300); };
     </script>
 </body>
 
