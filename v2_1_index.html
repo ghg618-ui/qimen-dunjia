@@ -292,7 +292,6 @@
             max-height: 80vh;
             overflow-y: auto;
             box-sizing: border-box;
-            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.05);
         }
 
         .nj-bd {
@@ -473,32 +472,15 @@
                 if (n === 5) { w.innerHTML = `<div style="height:100%;display:flex;justify-content:center;align-items:center;"><span class="p-stem" style="color:#ddd">${f.dp}</span></div>`; g.appendChild(w); return; }
                 const getS = t => t?.includes('击刑') ? 'color:#8b00cc;' : t?.includes('门迫') ? 'color:#cc0000;' : '';
 
-                // --- Corrected Na Ji Logic (Strictly consistent with qimen_web.py) ---
-                let njH = "";
-                const njR = {
-                    1: ['开门'],
-                    2: ['开门', '景门'],
-                    3: ['休门', '景门'],
-                    4: ['休门', '景门'],
-                    6: ['休门', '生门'],
-                    7: ['休门', '生门', '开门'],
-                    8: ['开门', '景门'],
-                    9: ['生门']
-                };
-                const xkIdx = ["", 0, 7, 2, 4, 0, 10, 8, 1, 6][n];
-                const isNaji = njR[n]?.includes(f.me) &&
-                    !r.mk[n].ts.includes('门迫') &&
-                    !Object.values(r.mk[n].gt).flat().includes('击刑') &&
-                    f.sn !== '白虎' &&
-                    !r.xk.includes(DI[xkIdx]);
-
-                if (isNaji) {
+                // --- Essential Na Ji Logic ---
+                let njH = ""; const njR = { 1: ['休门'], 2: ['生门'], 6: ['开门'], 8: ['生门'], 9: ['景门'] };
+                if (njR[n]?.includes(f.me) && !r.mk[n].ts.includes('门迫') && !Object.values(r.mk[n].gt).flat().includes('击刑') && f.sn !== '白虎') {
                     njH = `<div class="nj-bd" style="display:${document.getElementById('nj-btn').classList.contains('nj-on') ? 'block' : 'none'}">纳吉</div>`;
                 }
 
                 w.innerHTML = `${njH}
                     <div class="p-row">
-                        <span class="p-unit">${r.xk.includes(DI[xkIdx]) ? '<span class="xk-o">○</span>' : ''}${f.sn}</span>
+                        <span class="p-unit">${r.xk.includes(DI[["", 0, 7, 2, 4, 0, 10, 8, 1, 6][n]]) ? '<span class="xk-o">○</span>' : ''}${f.sn}</span>
                         <span>${n === r.ym ? '🐎' : ''}</span>
                     </div>
                     <div class="p-row">

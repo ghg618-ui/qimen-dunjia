@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>奇门遁甲 - 智能排盘系统</title>
+    <!-- 引入高精度历法库 -->
+    <script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap');
+
+        body {
+            background: #f5f2ed;
+            font-family: "Microsoft YaHei", sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.4rem;
+            letter-spacing: 4px;
+            font-weight: normal;
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+
+        .main-info {
+            background: #fff;
+            border: 1px solid #dcd3d1;
+            padding: 15px;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 5px;
+            box-sizing: border-box;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .info-r {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #f9f6f2;
+            padding-bottom: 4px;
+            font-size: 0.95rem;
+            align-items: center;
+        }
+
+        .lbl {
+            color: #777;
+            width: 65px;
+            display: inline-block;
+        }
+
+        .val {
+            color: #333;
+            flex-grow: 1;
+            text-align: left;
+        }
+
+        .kv {
+            color: #c02;
+            font-weight: bold;
+        }
+
+        .bazi-grid {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        .bazi-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bazi-lbl {
+            color: #b8905b;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+
+        .bazi-val {
+            font-size: 1.6rem;
+            color: #d32f2f;
+            font-weight: bold;
+        }
+
+        .bazi-val.green {
+            color: #2e7d32;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-auto-rows: 140px;
+            background: #333;
+            border: 2.3px solid #333;
+            gap: 1.5px;
+            width: 100%;
+            max-width: 600px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .palace-wrapper {
+            position: relative;
+            background: #fff;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .palace {
+            height: 100%;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+
+        .p-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 33.33%;
+        }
+
+        .p-left {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+
+        .p-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .p-shen {
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .p-xing {
+            font-size: 1.15rem;
+            color: #333;
+        }
+
+        .p-men {
+            font-size: 1.15rem;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .p-stem {
+            font-size: 1.5rem;
+            line-height: 1;
+            white-space: nowrap;
+            font-weight: bold;
+            font-family: serif;
+        }
+
+        .p-yingan {
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-right: 2px;
+        }
+
+        .circle {
+            color: #1a9c3e;
+            margin-right: 2px;
+            font-weight: bold;
+        }
+
+        .ma-ext {
+            font-size: 1.1rem;
+            color: #00bfa5;
+        }
+
+        .naji-badge {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(212, 237, 218, 0.95);
+            color: #155724;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            z-index: 20;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            70% {
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 92%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(184, 144, 91, 0.2);
+            border-radius: 40px;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 5px;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #8b7355;
+            font-size: 0.7rem;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .nav-icon {
+            font-size: 1.4rem;
+            margin-bottom: 2px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 12px;
+            width: 85%;
+            max-width: 450px;
+            position: relative;
+        }
+
+        .close {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .cs-label {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            font-size: 0.65rem;
+            color: #888;
+            white-space: nowrap;
+            margin-bottom: 4px;
+        }
+
+        body.show-cs .cs-label {
+            display: block;
+        }
+
+        .action-bar {
+            margin: 20px 0 100px 0;
+            display: flex;
+            gap: 8px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            background: #00bfa5;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .dt-input {
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 6px;
+            flex-grow: 1;
+            outline: none;
+        }
+
+        .dt-btn {
+            background: #00bfa5;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        #toast {
+            pointer-events: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            z-index: 20000;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>奇门遁甲</h1>
+    </div>
+    <div class="main-info">
+        <div class="info-r" style="border-bottom: none; margin-bottom: 5px;"><span class="val"
+                style="color:#b8905b; font-weight:bold;">转盘奇门 · 寄坤 · 置闰 · 演示版</span></div>
+        <div class="info-r"><span class="lbl">日期</span><span class="val"
+                style="display:flex; align-items:center;"><input type="datetime-local" id="custom-dt"
+                    class="dt-input"><button class="dt-btn" onclick="jumpToDate()">排盘</button></span></div>
+        <div class="bazi-grid">
+            <div class="bazi-col">
+                <div class="bazi-lbl">年柱</div>
+                <div class="bazi-val">--</div>
+            </div>
+            <div class="bazi-col">
+                <div class="bazi-lbl">月柱</div>
+                <div class="bazi-val green">--</div>
+            </div>
+            <div class="bazi-col">
+                <div class="bazi-lbl">日柱</div>
+                <div class="bazi-val green">--</div>
+            </div>
+            <div class="bazi-col">
+                <div class="bazi-lbl">时柱</div>
+                <div class="bazi-val">--</div>
+            </div>
+        </div>
+        <div class="info-r"><span class="lbl">节气</span><span class="val" id="jieqi-val">--</span></div>
+        <div class="info-r"><span class="lbl">局数</span><span class="val" style="color:#666"
+                id="jushu-val">--</span><span class="lbl">旬首</span><span class="val" style="color:#666"
+                id="xunshou-val">--</span></div>
+        <div class="info-r"><span class="lbl">值符</span><span class="val" style="color:#b8905b"
+                id="zhifu-val">--</span><span class="lbl">值使</span><span class="val" style="color:#b8905b"
+                id="zhishi-val">--</span></div>
+        <div class="info-r" style="border-bottom:none; margin-bottom:0;"><span class="lbl">空亡</span><span class="val kv"
+                id="xunkong-val">--</span><span class="lbl">马星</span><span class="val kv" id="yima-val">--</span></div>
+    </div>
+    <div class="grid" id="qimen-grid"></div>
+    <div class="action-bar">
+        <div class="action-btn" onclick="stepTime(-2)">◀ 上一局</div>
+        <div class="action-btn" style="background:#6c757d" onclick="toggleCS()">长生状态</div>
+        <div class="action-btn" onclick="stepTime(2)">下一局 ▶</div>
+    </div>
+    <div class="bottom-nav">
+        <div class="nav-item" onclick="resetToNow()"><span class="nav-icon">🏠</span><span>现在</span></div>
+        <div class="nav-item" onclick="shareChart()"><span class="nav-icon">📤</span><span>分享</span></div>
+        <div class="nav-item" id="nav-naji" onclick="toggleNaji()"><span class="nav-icon">✨</span><span>纳吉</span></div>
+        <div class="nav-item" onclick="showHelp()"><span class="nav-icon">❓</span><span>说明</span></div>
+    </div>
+    <div id="toast"></div>
+    <div id="najiModal" class="modal">
+        <div class="modal-content"><span class="close" onclick="closeModal('najiModal')">&times;</span>
+            <div id="naji-content"></div>
+        </div>
+    </div>
+    <div id="helpModal" class="modal">
+        <div class="modal-content"><span class="close" onclick="closeModal('helpModal')">&times;</span>
+            <h2 style="color:#b8905b">使用说明</h2>
+            <p>本系统采用置闰法排盘，数据计算依赖 lunar-javascript 库。</p>
+        </div>
+    </div>
+    <div id="palaceModal" class="modal">
+        <div class="modal-content"><span class="close" onclick="closeModal('palaceModal')">&times;</span>
+            <h3 id="palace-title" style="color:#b8905b"></h3>
+            <div id="palace-content"></div>
+        </div>
+    </div>
+    <script>
+        const TIANGAN = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'], DIZHI = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'], SANQI_LIUYI = ['戊', '己', '庚', '辛', '壬', '癸', '丁', '丙', '乙'], ZHUANPAN_ORDER = [1, 8, 3, 4, 9, 2, 7, 6], BAMEN_ORIG = { 1: '休门', 2: '死门', 3: '伤门', 4: '杜门', 6: '开门', 7: '惊门', 8: '生门', 9: '景门' }, JIUXING_ORIG = { 1: '天蓬', 2: '天芮', 3: '天冲', 4: '天辅', 5: '天禽', 6: '天心', 7: '天柱', 8: '天任', 9: '天英' }, BASHEN = ['值符', '螣蛇', '太阴', '六合', '白虎', '玄武', '九地', '九天'];
+        let currentDate = new Date();
+        function updateDisplay(res) {
+            document.getElementById('jieqi-val').innerText = res.jqName;
+            document.getElementById('jushu-val').innerText = res.dun + res.ju + "局(" + res.sy + ")";
+            document.getElementById('xunshou-val').innerText = res.xunshou;
+            document.getElementById('zhifu-val').innerText = res.zhifu;
+            document.getElementById('zhishi-val').innerText = res.zhishi;
+            document.getElementById('xunkong-val').innerText = res.xunkong;
+            document.getElementById('yima-val').innerText = ["", "坎1", "坤2", "震3", "巽4", "中5", "乾6", "兑7", "艮8", "离9"][res.yima];
+            const bz = document.querySelectorAll('.bazi-val');
+            bz[0].innerText = res.lunar.getYearInGanZhiExact(); bz[1].innerText = res.lunar.getMonthInGanZhiExact(); bz[2].innerText = res.lunar.getDayInGanZhiExact(); bz[3].innerText = res.lunar.getTimeInGanZhi();
+            const grid = document.getElementById('qimen-grid'); grid.innerHTML = '';
+            [4, 9, 2, 3, 5, 7, 8, 1, 6].forEach(gn => {
+                const f = res.jg[gn], wrapper = document.createElement('div'); wrapper.className = 'palace-wrapper'; wrapper.onclick = () => showPalace(gn, res);
+                if (gn === 5) { wrapper.innerHTML = `<div class="palace" style="justify-content:center;align-items:center;"><span class="p-stem" style="color:#666">${f.dp}</span></div>`; grid.appendChild(wrapper); return; }
+                const tpT = res.marks[gn].gan_tags[f.tp] || [], dpT = res.marks[gn].gan_tags[f.dp] || [], getS = t => t.includes('击刑') ? 'color:#8b00cc;font-weight:bold;' : t.includes('门迫') ? 'color:#cc0000;font-weight:bold;' : t.includes('入墓') ? 'color:#cc8800;font-weight:bold;' : t.includes('符使') ? 'color:#00bfa5;font-weight:bold;' : '';
+                const badge = document.createElement('div'); badge.className = 'naji-badge'; badge.style.display = 'none'; badge.innerText = '纳吉'; badge.onclick = e => { e.stopPropagation(); showNaji(gn, res); }; wrapper.appendChild(badge);
+                wrapper.innerHTML += `<div class="palace"><div class="p-row"><div class="p-left"><span class="p-shen">${res.xunkong.includes(DIZHI[["", 0, 7, 2, 4, 0, 10, 8, 1, 6][gn]]) ? '<span class="circle">○</span>' : ''}${f.shen}</span></div><div class="p-right">${gn === res.yima ? '<span class="ma-ext">🐎</span>' : ''}</div></div><div class="p-row"><div class="p-left"><span class="p-yingan">${f.yingan}</span><span class="p-xing">${f.xing}</span></div><div class="p-right"><div class="stem-group"><span class="cs-label">${calcCS(f.tp, gn)}</span><span class="p-stem" style="${getS(tpT)}">${f.tp}</span></div></div></div><div class="p-row"><div class="p-left"><span class="p-men" style="${getS(res.marks[gn].tags)}">${f.men}</span></div><div class="p-right"><div class="stem-group"><span class="cs-label">${calcCS(f.dp, gn)}</span><span class="p-stem" style="${getS(dpT)}">${f.dp}</span></div></div></div></div>`; grid.appendChild(wrapper);
+            });
+        }
+        function calcCS(g, p) { const s = { '甲': '亥', '乙': '午', '丙': '寅', '丁': '酉', '戊': '寅', '己': '酉', '庚': '巳', '辛': '子', '壬': '申', '癸': '卯' }, d = { '甲': 1, '乙': -1, '丙': 1, '丁': -1, '戊': 1, '己': -1, '庚': 1, '辛': -1, '壬': 1, '癸': -1 }, st = ["长生", "沐浴", "冠带", "临官", "帝旺", "衰", "病", "死", "墓", "绝", "胎", "养"]; if (!s[g]) return ""; const t = { 1: ['子'], 8: ['丑', '寅'], 3: ['卯'], 4: ['辰', '巳'], 9: ['午'], 2: ['未', '申'], 7: ['酉'], 6: ['戌', '亥'], 5: ['未', '申'] }[p]; const si = DIZHI.indexOf(s[g]); return t.map(z => { const ti = DIZHI.indexOf(z); return st[(d[g] === 1 ? (ti - si + 12) % 12 : (si - ti + 12) % 12)]; })[0]; }
+        function paipan(date) {
+            const solar = window.Solar.fromDate(date), lunar = solar.getLunar(), hg = lunar.getTimeInGanZhi(), xs = getXunShou(hg), dgan = { '甲子': '戊', '甲戌': '己', '甲申': '庚', '甲午': '辛', '甲辰': '壬', '甲寅': '癸' }[xs];
+            const prev = lunar.getPrevJieQi(), jqName = prev.getName(), jqIdx = ['冬至', '小寒', '大寒', '立春', '雨水', '惊蛰', '春分', '清明', '谷雨', '立夏', '小满', '芒种', '夏至', '小暑', '大暑', '立秋', '处暑', '白露', '秋分', '寒露', '霜降', '立冬', '小雪', '大雪'].indexOf(jqName);
+            const days = Math.floor((new Date(solar.getYear(), solar.getMonth() - 1, solar.getDay()) - new Date(1900, 0, 1)) / 86400000), sy = Math.floor(((10 + days) % 60 % 15) / 5), ju = [[1, 7, 4], [2, 8, 5], [3, 9, 6], [8, 5, 2], [9, 6, 3], [1, 7, 4], [3, 9, 6], [4, 1, 7], [5, 2, 8], [4, 1, 7], [5, 2, 8], [6, 3, 9], [9, 3, 6], [8, 2, 5], [7, 1, 4], [2, 5, 8], [1, 4, 7], [9, 3, 6], [7, 1, 4], [6, 9, 3], [5, 8, 2], [6, 9, 3], [5, 8, 2], [4, 7, 1]][jqIdx][sy];
+            const dp = {};[1, 2, 3, 4, 5, 6, 7, 8, 9].forEach((g, i) => { dp[jqIdx < 12 ? [1, 2, 3, 4, 5, 6, 7, 8, 9][(order = [1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(ju) + i) % 9] : [1, 2, 3, 4, 5, 6, 7, 8, 9][([1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(ju) - i + 9) % 9]] = SANQI_LIUYI[i]; });
+            const xsG = Object.keys(dp).find(k => dp[k] === dgan), xsActual = xsG == 5 ? 2 : parseInt(xsG), zhishi = BAMEN_ORIG[xsG] || '死门', sg = hg[0] === '甲' ? dgan : hg[0], sgG = Object.keys(dp).find(k => dp[k] === sg), sgActual = sgG == 5 ? 2 : parseInt(sgG);
+            const steps = (DIZHI.indexOf(hg[1]) - DIZHI.indexOf(xs.substring(1)) + 12) % 12; let cg = parseInt(xsG); for (let i = 0; i < steps; i++)cg = jqIdx < 12 ? (cg == 9 ? 1 : cg + 1) : (cg == 1 ? 9 : cg - 1);
+            const zsT = cg == 5 ? 2 : cg, getPos = g => ZHUANPAN_ORDER.indexOf(g == 5 ? 2 : g), xsP = getPos(xsActual), sgP = getPos(sgActual), zsP = getPos(zsT), jg = {};
+            for (let g = 1; g <= 9; g++) {
+                if (g == 5) { jg[g] = { dp: dp[5], yingan: '' }; continue; }
+                const p = ZHUANPAN_ORDER.indexOf(g), xingG = ZHUANPAN_ORDER[(p - (sgP - xsP + 8) % 8 + 8) % 8], menG = ZHUANPAN_ORDER[(p - (zsP - xsP + 8) % 8 + 8) % 8];
+                jg[g] = { dp: dp[g], tp: dp[xingG] || dp[5], xing: JIUXING_ORIG[xingG], men: BAMEN_ORIG[menG] || '死门', shen: BASHEN[jqIdx < 12 ? (p - sgP + 8) % 8 : (sgP - p + 8) % 8] };
+            }
+            const yinMap = {}; for (let i = 0; i < 9; i++)yinMap[jqIdx < 12 ? (zsT + i - 1) % 9 + 1 : (zsT - i + 9 - 1) % 9 + 1] = SANQI_LIUYI[(SANQI_LIUYI.indexOf(sg) + i) % 9];
+            for (let g = 1; g <= 9; g++)jg[g].yingan = yinMap[g];
+            const marks = {}; for (let g = 1; g <= 9; g++) { if (g == 5) continue; const m = { tags: [], gan_tags: {} }; if (['伤门', '杜门'].includes(jg[g].men) && [2, 8].includes(g)) m.tags.push('门迫'); if (['开门', '惊门'].includes(jg[g].men) && [3, 4].includes(g)) m.tags.push('门迫'); if (jg[g].shen == '值符' || jg[g].men == zhishi) m.tags.push('符使');[jg[g].tp, jg[g].dp, jg[g].yingan].forEach(gan => { const t = []; if ({ '己': [2], '戊': [3], '壬': [4], '癸': [4], '庚': [8], '辛': [9] }[gan]?.includes(g)) t.push('击刑'); if ({ '甲': [2], '癸': [2], '乙': [6], '丙': [6], '戊': [6], '丁': [8], '己': [8], '庚': [8], '辛': [4], '壬': [4] }[gan]?.includes(g)) t.push('入墓'); m.gan_tags[gan] = t; }); marks[g] = m; }
+            return { lunar, jg, zhifu: JIUXING_ORIG[xsG], zhishi, xunshou: xs, dun: jqIdx < 12 ? '阳遁' : '阴遁', ju, sy: ['上元', '中元', '下元'][sy], jqName, xunkong: lunar.getXunKong(), yima: { '申': 8, '子': 8, '辰': 8, '寅': 2, '午': 2, '戌': 2, '巳': 6, '酉': 6, '丑': 6, '亥': 4, '卯': 4, '未': 4 }[hg[1]], marks };
+        }
+        function getXunShou(gz) { const gi = TIANGAN.indexOf(gz[0]), zi = DIZHI.indexOf(gz[1]); return "甲" + DIZHI[(zi - gi + 12) % 12]; }
+        function resetToNow() { currentDate = new Date(); document.getElementById('custom-dt').value = new Date(currentDate.getTime() - currentDate.getTimezoneOffset() * 60000).toISOString().substring(0, 16); updateDisplay(paipan(currentDate)); }
+        function jumpToDate() { const v = document.getElementById('custom-dt').value; if (v) { currentDate = new Date(v); updateDisplay(paipan(currentDate)); } }
+        function stepTime(h) { currentDate.setHours(currentDate.getHours() + h); document.getElementById('custom-dt').value = new Date(currentDate.getTime() - currentDate.getTimezoneOffset() * 60000).toISOString().substring(0, 16); updateDisplay(paipan(currentDate)); }
+        function toggleCS() { document.body.classList.toggle('show-cs'); showToast(document.body.classList.contains('show-cs') ? '已显示长生' : '已隐藏长生'); }
+        function toggleNaji() { const b = document.getElementById('nav-naji'); const active = b.classList.toggle('active-nj'); document.querySelectorAll('.naji-badge').forEach(i => i.style.display = active ? 'flex' : 'none'); }
+        function showPalace(gn, res) { document.getElementById('palace-title').innerText = ["", "坎一", "坤二", "震三", "巽四", "中五", "乾六", "兑七", "艮八", "离九"][gn]; document.getElementById('palace-content').innerHTML = `<div style="line-height:2"><b>天干：</b>${res.jg[gn].tp}+${res.jg[gn].dp}<br><b>格局：</b>排盘推演中...</div>`; document.getElementById('palaceModal').style.display = 'block'; }
+        function showNaji(gn, res) { document.getElementById('naji-content').innerHTML = `<h3 style="color:#28a745">纳吉方案</h3><p>【颜色】${{ "甲": "绿", "乙": "浅绿", "丙": "红", "丁": "浅红", "戊": "棕黄", "己": "浅黄", "庚": "白", "辛": "金", "壬": "蓝黑", "癸": "浅蓝" }[res.jg[gn].tp]} - ${{ "甲": "绿", "乙": "浅绿", "丙": "红", "丁": "浅红", "戊": "棕黄", "己": "浅黄", "庚": "白", "辛": "金", "壬": "蓝黑", "癸": "浅蓝" }[res.jg[gn].dp]}</p>`; document.getElementById('najiModal').style.display = 'block'; }
+        function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000); }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function shareChart() { showToast('生成分享图中...'); html2canvas(document.body).then(c => { const k = document.createElement('a'); k.download = '奇门_' + Date.now() + '.png'; k.href = c.toDataURL(); k.click(); }); }
+        window.onload = () => { setTimeout(resetToNow, 200); };
+    </script>
+</body>
+
+</html>

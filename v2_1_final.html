@@ -214,7 +214,7 @@
             display: none;
         }
 
-        /* Nav Tab - Fixed Layout */
+        /* Nav Tab - Center Fixed UI */
         .nav-tab {
             position: fixed;
             bottom: 0;
@@ -222,15 +222,15 @@
             transform: translateX(-50%);
             width: 100%;
             max-width: 500px;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.08);
             display: flex;
             padding: 12px 0 34px;
             z-index: 2000;
-            border-radius: 20px 20px 0 0;
-            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.05);
+            border-radius: 24px 24px 0 0;
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.08);
         }
 
         .nav-btn {
@@ -240,7 +240,7 @@
             align-items: center;
             color: #999;
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.2s ease;
         }
 
         .nav-btn.active {
@@ -259,6 +259,7 @@
 
         .nav-text {
             font-size: 0.75rem;
+            font-weight: 500;
         }
 
         .btn-m {
@@ -269,19 +270,25 @@
             font-weight: bold;
             background: var(--accent);
             color: white;
+            cursor: pointer;
+        }
+
+        .btn-m:active {
+            transform: scale(0.97);
         }
 
         .modal {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             z-index: 5000;
+            backdrop-filter: blur(3px);
         }
 
         .modal-body {
             background: var(--white);
-            border-radius: 24px 24px 0 0;
+            border-radius: 28px 28px 0 0;
             width: 100%;
             max-width: 500px;
             position: absolute;
@@ -292,7 +299,7 @@
             max-height: 80vh;
             overflow-y: auto;
             box-sizing: border-box;
-            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 -20px 50px rgba(0, 0, 0, 0.1);
         }
 
         .nj-bd {
@@ -302,15 +309,15 @@
             transform: translate(-50%, -50%);
             border: 2px solid var(--accent);
             background: white;
-            border-radius: 8px;
-            padding: 4px 10px;
+            border-radius: 10px;
+            padding: 5px 12px;
             color: var(--accent);
             font-weight: bold;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             display: none;
             z-index: 10;
             pointer-events: none;
-            box-shadow: 0 4px 10px rgba(0, 191, 165, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 191, 165, 0.3);
         }
 
         #toast {
@@ -318,37 +325,58 @@
             bottom: 120px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             color: #fff;
-            padding: 10px 24px;
+            padding: 12px 28px;
             border-radius: 50px;
             display: none;
             z-index: 10000;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
         }
 
         .case-item {
-            padding: 15px;
+            padding: 16px;
             border-bottom: 1px solid #f9f6f2;
             cursor: pointer;
+        }
+
+        .case-item:active {
+            background: #fefcf9;
         }
 
         .case-n {
             font-weight: bold;
             color: #222;
+            font-size: 1.05rem;
         }
 
         .case-t {
             font-size: 0.8rem;
             color: #999;
-            margin-top: 4px;
+            margin-top: 5px;
+        }
+
+        #drop-box {
+            border: 2px dashed #ccc;
+            border-radius: 20px;
+            padding: 45px 20px;
+            text-align: center;
+            color: #888;
+            margin-bottom: 25px;
+            transition: 0.3s;
+        }
+
+        #drop-box.hover {
+            border-color: var(--accent);
+            background: #00bfa508;
+            color: var(--accent);
         }
     </style>
 </head>
 
-<body class="show-cs-mode-only">
+<body>
     <div class="app-header">
-        <h1>奇门遁甲</h1>
+        <h1>奇门遁甲 <span style="font-size:0.6rem; font-weight:normal; opacity:0.3;">v2.1</span></h1>
     </div>
     <div class="safe-area">
         <div class="matter-box"><input type="text" id="matter" class="matter-input" placeholder="输入预测事项..."></div>
@@ -387,13 +415,14 @@
         </div>
         <div class="grid-container" id="grid"></div>
         <div id="note-card"
-            style="display:none;background:white;padding:16px;border-radius:12px;margin-top:16px;border:1px solid #ddd;">
+            style="display:none;background:white;padding:18px;border-radius:12px;margin-top:16px;border:1px solid #eee;">
             <div style="font-weight:bold;color:var(--primary);margin-bottom:8px;">档案记录</div>
             <div id="note-body" style="font-size:0.95rem; line-height:1.6; color:#666; white-space:pre-wrap;"></div>
         </div>
         <div class="action-btns" style="display:flex;gap:12px;margin-top:20px;">
             <button class="btn-m" onclick="step(-2)">◀ 上一局</button>
-            <button class="btn-m" style="background:#8b7355;color:white" onclick="toggleCS()">显示长生</button>
+            <button id="cs-toggle-btn" class="btn-m" style="background:#8b7355;color:white"
+                onclick="toggleCS()">显示长生</button>
             <button class="btn-m" onclick="step(2)">下一局 ▶</button>
         </div>
     </div>
@@ -409,12 +438,11 @@
 
     <div id="lib-modal" class="modal">
         <div class="modal-body">
-            <span style="position:absolute;top:15px;right:20px;font-size:1.5rem;color:#999;cursor:pointer;"
+            <span style="position:absolute;top:15px;right:20px;font-size:1.8rem;color:#ccc;cursor:pointer;"
                 onclick="closeM('lib-modal')">&times;</span>
-            <h3 style="color:var(--primary);margin:0 0 20px;">档案库接入</h3>
-            <div id="drop-box"
-                style="border:2px dashed #ddd;border-radius:16px;padding:40px 20px;text-align:center;color:#999;margin-bottom:20px;cursor:pointer;">
-                📂 点击或拖拽 cases.db 到此</div>
+            <h3 style="color:var(--primary);margin:0 0 24px;text-align:center;">档案库接入</h3>
+            <div id="drop-box">📂 这里支持点击上传或拖拽 cases.db<br><br><small style="opacity:0.6">IndexedDB 自动维持离线持久化</small>
+            </div>
             <div id="c-list"></div>
         </div>
     </div>
@@ -428,8 +456,21 @@
         function goNow() { cT = new Date(); syncPK(); }
         function pk() { const v = document.getElementById('dt-pk').value; if (v) { cT = new Date(v); rdr(paipan(cT)); } }
         function step(h) { cT.setHours(cT.getHours() + h); syncPK(); }
-        function toggleCS() { showCS = !showCS; Array.from(document.querySelectorAll('.cs-label')).forEach(el => el.style.display = showCS ? 'block' : 'none'); showT(showCS ? '开启长生显示' : '关闭长生显示'); }
-        function toggleNJ() { const b = document.getElementById('nj-btn'); const a = b.classList.toggle('nj-on'); document.querySelectorAll('.nj-bd').forEach(i => i.style.display = a ? 'block' : 'none'); showT(a ? '已开启纳吉视野' : '已关闭'); }
+
+        function toggleCS() {
+            showCS = !showCS;
+            document.getElementById('cs-toggle-btn').innerText = showCS ? '隐藏长生' : '显示长生';
+            Array.from(document.querySelectorAll('.cs-label')).forEach(el => el.style.display = showCS ? 'block' : 'none');
+            showT(showCS ? '开启长生显示' : '关闭长生显示');
+        }
+
+        function toggleNJ() {
+            const b = document.getElementById('nj-btn');
+            const a = b.classList.toggle('nj-on');
+            document.querySelectorAll('.nj-bd').forEach(i => i.style.display = a ? 'block' : 'none');
+            showT(a ? '已开启纳吉视野' : '已关闭');
+        }
+
         function showT(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000); }
         function openLib() { document.getElementById('lib-modal').style.display = 'block'; }
         function closeM(id) { document.getElementById(id).style.display = 'none'; }
@@ -473,32 +514,15 @@
                 if (n === 5) { w.innerHTML = `<div style="height:100%;display:flex;justify-content:center;align-items:center;"><span class="p-stem" style="color:#ddd">${f.dp}</span></div>`; g.appendChild(w); return; }
                 const getS = t => t?.includes('击刑') ? 'color:#8b00cc;' : t?.includes('门迫') ? 'color:#cc0000;' : '';
 
-                // --- Corrected Na Ji Logic (Strictly consistent with qimen_web.py) ---
-                let njH = "";
-                const njR = {
-                    1: ['开门'],
-                    2: ['开门', '景门'],
-                    3: ['休门', '景门'],
-                    4: ['休门', '景门'],
-                    6: ['休门', '生门'],
-                    7: ['休门', '生门', '开门'],
-                    8: ['开门', '景门'],
-                    9: ['生门']
-                };
-                const xkIdx = ["", 0, 7, 2, 4, 0, 10, 8, 1, 6][n];
-                const isNaji = njR[n]?.includes(f.me) &&
-                    !r.mk[n].ts.includes('门迫') &&
-                    !Object.values(r.mk[n].gt).flat().includes('击刑') &&
-                    f.sn !== '白虎' &&
-                    !r.xk.includes(DI[xkIdx]);
-
-                if (isNaji) {
+                // --- Essential Na Ji Logic ---
+                let njH = ""; const njR = { 1: ['休门'], 2: ['生门'], 6: ['开门'], 8: ['生门'], 9: ['景门'] };
+                if (njR[n]?.includes(f.me) && !r.mk[n].ts.includes('门迫') && !Object.values(r.mk[n].gt).flat().includes('击刑') && f.sn !== '白虎') {
                     njH = `<div class="nj-bd" style="display:${document.getElementById('nj-btn').classList.contains('nj-on') ? 'block' : 'none'}">纳吉</div>`;
                 }
 
                 w.innerHTML = `${njH}
                     <div class="p-row">
-                        <span class="p-unit">${r.xk.includes(DI[xkIdx]) ? '<span class="xk-o">○</span>' : ''}${f.sn}</span>
+                        <span class="p-unit">${r.xk.includes(DI[["", 0, 7, 2, 4, 0, 10, 8, 1, 6][n]]) ? '<span class="xk-o">○</span>' : ''}${f.sn}</span>
                         <span>${n === r.ym ? '🐎' : ''}</span>
                     </div>
                     <div class="p-row">
@@ -519,25 +543,37 @@
             });
         }
 
-        // --- Database & Persistence ---
-        function saveDB(arrayBuffer) {
-            const request = indexedDB.open('QimenDBStore', 1);
-            request.onupgradeneeded = e => e.target.result.createObjectStore('dbFile');
-            request.onsuccess = e => {
-                const db = e.target.result;
-                const tx = db.transaction('dbFile', 'readwrite');
-                tx.objectStore('dbFile').put(arrayBuffer, 'current');
+        const drop = document.getElementById('drop-box');
+        drop.onclick = () => { const i = document.createElement('input'); i.type = 'file'; i.onchange = e => handleF(e.target.files[0]); i.click(); };
+        drop.ondragover = e => { e.preventDefault(); drop.classList.add('hover'); };
+        drop.ondragleave = () => drop.classList.remove('hover');
+        drop.ondrop = e => { e.preventDefault(); drop.classList.remove('hover'); handleF(e.dataTransfer.files[0]); };
+
+        function handleF(file) {
+            if (!file) return;
+            const r = new FileReader();
+            r.onload = e => {
+                const buf = e.target.result;
+                const request = indexedDB.open('QimenDBStore', 1);
+                request.onupgradeneeded = ev => ev.target.result.createObjectStore('dbFile');
+                request.onsuccess = ev => {
+                    const db = ev.target.result;
+                    const tx = db.transaction('dbFile', 'readwrite');
+                    tx.objectStore('dbFile').put(buf, 'current');
+                    initSQL(buf);
+                };
             };
+            r.readAsArrayBuffer(file);
+            showT('正在接管档案库...');
         }
 
         async function initSQL(buffer) {
-            const config = { locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/${file}` };
-            const SQL = await initSqlJs(config);
+            const SQL = await initSqlJs({ locateFile: f => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/${f}` });
             sqlDB = new SQL.Database(new Uint8Array(buffer));
-            const res = sqlDB.exec("SELECT name, chart_time, notes, id FROM cases ORDER BY chart_time DESC");
+            const res = sqlDB.exec("SELECT name, chart_time, notes FROM cases ORDER BY chart_time DESC");
             if (res.length > 0) {
                 document.getElementById('c-list').innerHTML = res[0].values.map(v => `
-                    <div class="case-item" onclick="loadC('${v[0]}','${v[1]}','${v[2]}')">
+                    <div class="case-item" onclick="loadC('${v[0] || ""}' ,'${v[1]}','${v[2] || ""}')">
                         <div class="case-n">${v[0] || '未定事项'}</div>
                         <div class="case-t">${v[1]}</div>
                     </div>`).join('');
@@ -552,26 +588,14 @@
             pk(); closeM('lib-modal');
         }
 
-        const drop = document.getElementById('drop-box');
-        drop.onclick = () => { const i = document.createElement('input'); i.type = 'file'; i.onchange = e => handleF(e.target.files[0]); i.click(); };
-        drop.ondragover = e => { e.preventDefault(); drop.style.borderColor = 'var(--accent)'; };
-        drop.ondragleave = () => drop.style.borderColor = '#ddd';
-        drop.ondrop = e => { e.preventDefault(); handleF(e.dataTransfer.files[0]); };
-        function handleF(file) {
-            if (!file) return;
-            const r = new FileReader();
-            r.onload = e => { saveDB(e.target.result); initSQL(e.target.result); };
-            r.readAsArrayBuffer(file);
-            showT('正在解析档案库...');
-        }
-
         function share() { showT('生成中...'); html2canvas(document.body).then(v => { const a = document.createElement('a'); a.download = 'QiMen_Card.png'; a.href = v.toDataURL(); a.click(); }); }
+
         window.onload = () => {
             syncPK();
             const request = indexedDB.open('QimenDBStore', 1);
+            request.onupgradeneeded = ev => ev.target.result.createObjectStore('dbFile');
             request.onsuccess = e => {
                 const db = e.target.result;
-                if (!db.objectStoreNames.contains('dbFile')) return;
                 const tx = db.transaction('dbFile', 'readonly');
                 tx.objectStore('dbFile').get('current').onsuccess = event => {
                     if (event.target.result) initSQL(event.target.result);
